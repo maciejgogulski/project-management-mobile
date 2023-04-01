@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                httpService.sendRequest("/project/1", Request.Method.GET, context);
+                httpService.sendRequest("/api/projects", Request.Method.GET, context);
             }
         });
     }
