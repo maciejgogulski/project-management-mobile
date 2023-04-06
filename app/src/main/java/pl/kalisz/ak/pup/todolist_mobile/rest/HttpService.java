@@ -3,24 +3,24 @@ package pl.kalisz.ak.pup.todolist_mobile.rest;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.util.Log;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import java.io.IOException;
+import java.util.List;
 
-import org.json.JSONArray;
-
-import pl.kalisz.ak.pup.todolist_mobile.TestActivity;
-import pl.kalisz.ak.pup.todolist_mobile.rest.exceptions.BadHttpRequestException;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Headers;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
 
 /**
  * Klasa służąca do obsługi requestów HTTP z zewnętrznej aplikacji webowej todolist.
+ *
  * @author Maciej Gogulski
  */
 public class HttpService {
@@ -28,38 +28,93 @@ public class HttpService {
     /**
      * Pole przechowujące adres url aplikacji webowej todolist.
      */
-    private String webAppUrl = "http://10.0.2.2:8000";
+    private final String webAppUrl = "http://10.0.2.2:8000";
 
+    private final String apiToken = "492Mg2JawqdwqZdR5PTppGGTtW1PGdzofwUQDZsF";
 
-    /**
-     * Metoda służąca do wysyłania żądania na podaną ścieżkę w aplikacji webowej todolist.
-     * @param route Endpoint, na który chcemy wysłać request do aplikacji. Musi zaczynać się od "/".
-     * @param method Metoda, którą chcemy wysłać żądanie. Wartości przypisane odpowiednim metodom są zdefiniowane w klasie "Request.Method".
-     * @param context Bieżąca aktywność aplikacji - zazwyczaj będzie tu przekazywane "this".
-     */
-    public void sendRequest(String route, int method, Context context) throws BadHttpRequestException {
-        // Utworzenie kolejki żądań.
-        RequestQueue queue = Volley.newRequestQueue(context);
+    private final Context context;
 
-        if (!route.startsWith("/")) {
-            throw new BadHttpRequestException("Niepoprawny routing: " + webAppUrl + route);
+    private OkHttpClient client = new OkHttpClient();
+
+    public HttpService(Context context) {
+        this.context = context;
+    }
+
+    public void sendRequest(String endpoint) throws IOException {
+        String url = webAppUrl + endpoint;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", "Bearer " + apiToken)
+                .header("X-CSRF-TOKEN", getCsrfTokenFromSharedPreferences())
+                .build();
+
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                Log.d(TAG, "onResponse: " + response.body().string());
+            }
+
+            public void onFailure(Call call, IOException e) {
+                Log.d(TAG, "onFailure: " + e.getMessage());
+            }
+        });
+    }
+
+    public void sendCSRFRequest() throws IOException {
+
+        String url = webAppUrl + "/sanctum/csrf-cookie";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .header("Authorization", "Bearer " + apiToken)
+                .build();
+
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            public void onResponse(Call call, Response response)
+                    throws IOException {
+                putCsrfTokenInSharedPreferences(extractCSRF(response));
+                Log.d(TAG, "onResponse: " + getCsrfTokenFromSharedPreferences());
+            }
+
+            public void onFailure(Call call, IOException e) {
+                Log.d(TAG, "onFailure: " + e.getMessage());
+            }
+        });
+    }
+
+    private String extractCSRF(Response response) {
+        Headers headers = response.headers();
+
+        List<String> cookies = headers.values("Set-Cookie");
+
+        String csrfToken = "";
+
+        for (String cookie : cookies) {
+            if (cookie.startsWith("XSRF-TOKEN=")) {
+                csrfToken = cookie.substring("XSRF-TOKEN=".length(), cookie.indexOf(";"));
+            }
         }
 
-        StringRequest stringRequest = new StringRequest(method, webAppUrl + route,
-                response -> {
-                    // Miejsce na przetworzenie odpowiedzi JSON
-                    Intent intent = new Intent(context, TestActivity.class);
-                    intent.putExtra("response", response);
-                    context.startActivity(intent);
-                },
-                error -> {
-                    Log.d(TAG, "sendRequest: " + error.toString());
-                    // Obsłużenie błędu żądania
-//                    Intent intent = new Intent(context, TestActivity.class);
-//                    intent.putExtra("response", error.toString());
-//                    context.startActivity(intent);
-                }
-        );
-        queue.add(stringRequest);
+        return csrfToken;
+    }
+
+    private void putCsrfTokenInSharedPreferences(String csrfToken) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+        sharedPreferences.edit()
+                .putString("XCSRF", csrfToken).apply();
+    }
+
+    private String getCsrfTokenFromSharedPreferences() throws IOException {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString("XCSRF", null);
+
+        if (token == null) {
+            sendCSRFRequest();
+        }
+
+        return token;
     }
 }
