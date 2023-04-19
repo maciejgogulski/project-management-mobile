@@ -40,7 +40,7 @@ public class HttpService {
         this.context = context;
     }
 
-    public void sendRequest(String endpoint) throws IOException {
+    public void sendRequest(String endpoint, Callback callback) throws IOException {
         String url = webAppUrl + endpoint;
 
         Request request = new Request.Builder()
@@ -50,16 +50,8 @@ public class HttpService {
                 .build();
 
         Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            public void onResponse(Call call, Response response)
-                    throws IOException {
-                Log.d(TAG, "onResponse: " + response.body().string());
-            }
 
-            public void onFailure(Call call, IOException e) {
-                Log.d(TAG, "onFailure: " + e.getMessage());
-            }
-        });
+        call.enqueue(callback);
     }
 
     public void sendCSRFRequest() throws IOException {
@@ -72,6 +64,7 @@ public class HttpService {
                 .build();
 
         Call call = client.newCall(request);
+
         call.enqueue(new Callback() {
             public void onResponse(Call call, Response response)
                     throws IOException {
