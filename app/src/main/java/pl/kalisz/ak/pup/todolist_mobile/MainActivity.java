@@ -1,40 +1,85 @@
 package pl.kalisz.ak.pup.todolist_mobile;
 
-import static android.content.ContentValues.TAG;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+import androidx.appcompat.app.AppCompatActivity;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
 import pl.kalisz.ak.pup.todolist_mobile.fragments.ProjectListFragment;
-import pl.kalisz.ak.pup.todolist_mobile.rest.HttpService;
-import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
-import pl.kalisz.ak.pup.todolist_mobile.rest.clients.ProjectClient;
+import pl.kalisz.ak.pup.todolist_mobile.fragments.TasksAfterTermFragment;
+import pl.kalisz.ak.pup.todolist_mobile.fragments.TasksBeforeTermFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    TasksAfterTermFragment tasksAfterTermFragment;
+
+    TasksBeforeTermFragment tasksBeforeTermFragment;
+
     ProjectListFragment projectListFragment;
+
+    Button tasksAfterTermButton;
+
+    Button tasksBeforeTermButton;
+
+    Button projectListButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        projectListFragment = new ProjectListFragment();
+        projectListFragment = ProjectListFragment.newInstance();
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.project_list_fragment, projectListFragment)
+                .add(R.id.main_activity_fragment, projectListFragment)
                 .commit();
+
+        defineProjectListFragment();
+        defineTasksAfterTermButton();
+        defineTasksBeforeTermButton();
+
+    }
+
+    public void defineTasksAfterTermButton() {
+        tasksAfterTermButton = findViewById(R.id.afterTermButton);
+        tasksAfterTermButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tasksAfterTermFragment = new TasksAfterTermFragment();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_activity_fragment, tasksAfterTermFragment)
+                        .commit();
+            }
+        });
+    }
+
+    public void defineTasksBeforeTermButton() {
+        tasksBeforeTermButton = findViewById(R.id.beforeTermButton);
+        tasksBeforeTermButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tasksBeforeTermFragment = new TasksBeforeTermFragment();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_activity_fragment, tasksBeforeTermFragment)
+                        .commit();
+            }
+        });
+    }
+
+    public void defineProjectListFragment() {
+        projectListButton = findViewById(R.id.projectListButton);
+        projectListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.main_activity_fragment, projectListFragment)
+                        .commit();
+            }
+        });
     }
 }
