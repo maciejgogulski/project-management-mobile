@@ -1,8 +1,9 @@
 package pl.kalisz.ak.pup.todolist_mobile.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Task {
+public class Task implements Serializable {
     private String name;
 
     private int completed;

@@ -1,6 +1,9 @@
 package pl.kalisz.ak.pup.todolist_mobile.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -11,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import pl.kalisz.ak.pup.todolist_mobile.R;
+import pl.kalisz.ak.pup.todolist_mobile.activities.ProjectShowActivity;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Project;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Task;
 
@@ -61,10 +65,22 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
 
         TextView tasksUnfinished = (TextView) cardView.findViewById(R.id.card_unfinished_tasks);
         tasksUnfinished.setText("Nieukończone zadania: " + unfinishedTasksCount);
+
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, ProjectShowActivity.class);
+                intent.putExtra(ProjectShowActivity.EXTRA_PROJECT, (Project) project);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return projectList.size();
     }
+
+
 }

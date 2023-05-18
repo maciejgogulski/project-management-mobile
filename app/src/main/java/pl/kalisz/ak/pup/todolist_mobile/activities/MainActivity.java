@@ -1,4 +1,4 @@
-package pl.kalisz.ak.pup.todolist_mobile;
+package pl.kalisz.ak.pup.todolist_mobile.activities;
 
 import android.os.Bundle;
 import android.view.View;
@@ -6,6 +6,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import pl.kalisz.ak.pup.todolist_mobile.R;
 import pl.kalisz.ak.pup.todolist_mobile.fragments.ProjectListFragment;
 import pl.kalisz.ak.pup.todolist_mobile.fragments.TasksAfterTermFragment;
 import pl.kalisz.ak.pup.todolist_mobile.fragments.TasksBeforeTermFragment;

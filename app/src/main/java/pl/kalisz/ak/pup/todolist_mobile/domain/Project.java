@@ -1,8 +1,9 @@
 package pl.kalisz.ak.pup.todolist_mobile.domain;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Project {
+public class Project implements Serializable {
 
     private long id;
 
