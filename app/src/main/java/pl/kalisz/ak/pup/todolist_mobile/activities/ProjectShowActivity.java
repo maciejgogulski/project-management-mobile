@@ -1,17 +1,20 @@
 package pl.kalisz.ak.pup.todolist_mobile.activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
 import android.os.Bundle;
-import android.util.AttributeSet;
-import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
 import pl.kalisz.ak.pup.todolist_mobile.R;
+import pl.kalisz.ak.pup.todolist_mobile.adapters.TaskListAdapter;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Project;
+import pl.kalisz.ak.pup.todolist_mobile.domain.Task;
 
 public class ProjectShowActivity extends AppCompatActivity {
 
@@ -20,6 +23,10 @@ public class ProjectShowActivity extends AppCompatActivity {
     private Project project;
 
     TextView nameTextView;
+
+    RecyclerView tasksRecyclerView;
+
+    TaskListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,5 +37,17 @@ public class ProjectShowActivity extends AppCompatActivity {
 
         nameTextView = (TextView) findViewById(R.id.project_show_name);
         nameTextView.setText(project.getName());
+
+        tasksRecyclerView = (RecyclerView) findViewById(R.id.project_show_task_recycler_view);
+        tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        List<Task> tasks = project.getTasks();
+
+        if (!tasks.isEmpty()) {
+            adapter = new TaskListAdapter(tasks);
+            tasksRecyclerView.setAdapter(adapter);
+        }
     }
+
+
 }
