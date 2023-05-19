@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -24,11 +23,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        public CardView cardView;
+        public View listItem;
 
-        public ViewHolder(CardView cardView) {
-            super(cardView);
-            this.cardView = cardView;
+        public ViewHolder(View listItem) {
+            super(listItem);
+            this.listItem = listItem;
         }
     }
 
@@ -39,23 +38,23 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        CardView cv = (CardView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.task_cardview_layout, parent, false);
-        return new ViewHolder(cv);
+        View listItem = (View) LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.task_list_item, parent, false);
+        return new ViewHolder(listItem);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Task task = taskList.get(position);
 
-        CardView cardView = holder.cardView;
-        TextView taskName = (TextView) cardView.findViewById(R.id.card_task_name);
+        View listItem = holder.listItem;
+        TextView taskName = (TextView) listItem.findViewById(R.id.list_item_task_name);
         taskName.setText(task.getName());
 
-        TextView taskFinished = (TextView) cardView.findViewById(R.id.card_finished);
+        TextView taskFinished = (TextView) listItem.findViewById(R.id.list_item_finished);
         taskFinished.setText(task.isCompleted() ? "Tak" : "Nie");
 
-        cardView.setOnClickListener(new View.OnClickListener() {
+        listItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
@@ -70,6 +69,5 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     public int getItemCount() {
         return taskList.size();
     }
-
 
 }
