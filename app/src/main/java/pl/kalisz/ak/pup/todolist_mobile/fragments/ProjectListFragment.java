@@ -71,7 +71,7 @@ public class ProjectListFragment extends Fragment {
                 @Override
                 public void onSuccess(List<Project> data) {
                     requireActivity().runOnUiThread(() -> {
-                        projectListAdapter = new ProjectListAdapter(data); // TODO pobiera projekty ale bez tasków, naprawić.
+                        projectListAdapter = new ProjectListAdapter(data);
                         projectListRecyclerView.setAdapter(projectListAdapter);
                     });
                 }

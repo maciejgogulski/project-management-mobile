@@ -24,7 +24,7 @@ public class ProjectClient extends HttpClient {
     }
 
     public void getProjectsWithTasks(final ApiResponseListener<List<Project>> listener) throws IOException {
-        httpService.sendRequest("/api/projects", new Callback() {
+        httpService.sendRequest("/api/projects/with-tasks", new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 listener.onFailure(e.getMessage());
