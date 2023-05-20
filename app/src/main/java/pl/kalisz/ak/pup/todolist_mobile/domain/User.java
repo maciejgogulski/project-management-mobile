@@ -1,9 +1,30 @@
 package pl.kalisz.ak.pup.todolist_mobile.domain;
 
-public class User {
-    private String username;
+import java.io.Serializable;
 
-    public User(String username) {
-        this.username = username;
+public class User implements Serializable {
+    private long id;
+
+    private String name;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 }

@@ -13,14 +13,18 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import pl.kalisz.ak.pup.todolist_mobile.R;
+import pl.kalisz.ak.pup.todolist_mobile.adapters.ProjectListAdapter;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Project;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Task;
 import pl.kalisz.ak.pup.todolist_mobile.domain.User;
+import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
+import pl.kalisz.ak.pup.todolist_mobile.rest.clients.UserClient;
 
 public class TaskFormActivity extends AppCompatActivity {
 
@@ -38,6 +42,8 @@ public class TaskFormActivity extends AppCompatActivity {
 
     Button submitBtn;
 
+    private UserClient userClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,19 +57,38 @@ public class TaskFormActivity extends AppCompatActivity {
 
     private void setupSpinners() {
         userSpinner = findViewById(R.id.task_form_user);
-        List<User> usersList = List.of(
-                new User("SampleUser1"),
-                new User("SampleUser2")
-        ); // TODO Pobieranie userów z api
-        userSpinner.setAdapter(
-                new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, usersList)
-        );
+
+        getUsersFromApi();
 
         projectSpinner = findViewById(R.id.task_form_project);
         List<Project> projectsList = new ArrayList<>(); // TODO Pobieranie projektów z api
         projectSpinner.setAdapter(
                 new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, projectsList)
         );
+    }
+
+    private void getUsersFromApi() {
+        userClient = new UserClient(this);
+
+        try {
+            userClient.getUsers(new HttpClient.ApiResponseListener<>() {
+                @Override
+                public void onSuccess(List<User> data) {
+                    runOnUiThread(() -> {
+                        userSpinner.setAdapter(
+                                new ArrayAdapter<>(TaskFormActivity.this, android.R.layout.simple_dropdown_item_1line, data)
+                        );
+                    });
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void setupDatePicker() {
