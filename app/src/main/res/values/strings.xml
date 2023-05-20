@@ -5,4 +5,7 @@
     <string name="projects">Projekty</string>
     <string name="afterTermTasks">Zadania po terminie</string>
     <string name="beforeTermTasks">Zadania przed terminem</string>
+    <string name="add_task">Dodaj zadanie</string>
+    <string name="name">Nazwa</string>
+    <string name="save">Zapisz</string>
 </resources>

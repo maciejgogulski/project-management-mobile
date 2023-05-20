@@ -15,7 +15,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".TaskShowActivity"
+            android:name=".activities.TaskFormActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.TaskShowActivity"
             android:exported="false" />
         <activity
             android:name=".activities.ProjectShowActivity"

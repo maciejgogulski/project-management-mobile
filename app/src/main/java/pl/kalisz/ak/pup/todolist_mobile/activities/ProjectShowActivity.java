@@ -1,7 +1,11 @@
 package pl.kalisz.ak.pup.todolist_mobile.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,6 +32,8 @@ public class ProjectShowActivity extends AppCompatActivity {
 
     TaskListAdapter adapter;
 
+    Button addTaskBtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +41,28 @@ public class ProjectShowActivity extends AppCompatActivity {
 
         project = (Project) getIntent().getExtras().get(EXTRA_PROJECT);
 
-        nameTextView = (TextView) findViewById(R.id.project_show_name);
-        nameTextView.setText(project.getName());
+        nameTextView = findViewById(R.id.project_show_name);
+        nameTextView.setText("Projekt " + project.getName());
 
-        tasksRecyclerView = (RecyclerView) findViewById(R.id.project_show_task_recycler_view);
+        setupTaskRecyclerView();
+        setupButtons();
+
+    }
+
+    private void setupButtons() {
+        addTaskBtn = findViewById(R.id.project_show_add_task_btn);
+        addTaskBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, TaskFormActivity.class);
+                context.startActivity(intent);
+            }
+        });
+    }
+
+    private void setupTaskRecyclerView() {
+        tasksRecyclerView = findViewById(R.id.project_show_task_recycler_view);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         List<Task> tasks = project.getTasks();
@@ -48,6 +72,4 @@ public class ProjectShowActivity extends AppCompatActivity {
             tasksRecyclerView.setAdapter(adapter);
         }
     }
-
-
 }
