@@ -52,13 +52,22 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         TextView projectName = (TextView) cardView.findViewById(R.id.card_project_name);
         projectName.setText(project.getName());
 
-        long finishedTasksCount = project.getTasks()
-                .stream().filter(Task::isCompleted)
-                .count();
+        long finishedTasksCount;
+        long unfinishedTasksCount;
 
-        long unfinishedTasksCount = project.getTasks()
-                .stream().filter(task -> !task.isCompleted())
-                .count();
+        if (project.getTasks() != null) {
+            finishedTasksCount = project.getTasks()
+                    .stream().filter(Task::isCompleted)
+                    .count();
+
+            unfinishedTasksCount = project.getTasks()
+                    .stream().filter(task -> !task.isCompleted())
+                    .count();
+        } else {
+            finishedTasksCount = 0;
+            unfinishedTasksCount = 0;
+        }
+
 
         TextView tasksFinished = (TextView) cardView.findViewById(R.id.card_finished_tasks);
         tasksFinished.setText("Ukończone zadania: " + finishedTasksCount);

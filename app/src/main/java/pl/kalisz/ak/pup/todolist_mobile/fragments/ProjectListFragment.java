@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,13 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -31,9 +24,11 @@ import pl.kalisz.ak.pup.todolist_mobile.R;
 import pl.kalisz.ak.pup.todolist_mobile.adapters.ProjectListAdapter;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Project;
 import pl.kalisz.ak.pup.todolist_mobile.rest.HttpService;
+import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
+import pl.kalisz.ak.pup.todolist_mobile.rest.clients.ProjectClient;
 
 public class ProjectListFragment extends Fragment {
-    private HttpService httpService;
+    private ProjectClient projectClient;
     RecyclerView projectListRecyclerView;
     ProjectListAdapter projectListAdapter;
 
@@ -58,7 +53,7 @@ public class ProjectListFragment extends Fragment {
         View view = inflater.inflate(R.layout.project_list_fragment_layout, container, false);
         projectListRecyclerView = view.findViewById(R.id.project_list_recycler_view);
 
-        httpService = new HttpService(getContext());
+        projectClient = new ProjectClient(getContext());
 
         return view;
     }
@@ -72,33 +67,20 @@ public class ProjectListFragment extends Fragment {
 
     public void loadProjectListFromApi() {
         try {
-            httpService.sendRequest("/api/projects/with-tasks", new Callback() {
+            projectClient.getProjectsWithTasks(new HttpClient.ApiResponseListener<>() {
                 @Override
-                public void onFailure(Call call, IOException e) {
-                    e.printStackTrace();
+                public void onSuccess(List<Project> data) {
+                    requireActivity().runOnUiThread(() -> {
+                        projectListAdapter = new ProjectListAdapter(data); // TODO pobiera projekty ale bez tasków, naprawić.
+                        projectListRecyclerView.setAdapter(projectListAdapter);
+                    });
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        final String responseData = response.body().string();
-                         requireActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Gson gson = new Gson();
+                public void onFailure(String errorMessage) {
 
-                                projectListAdapter = new ProjectListAdapter(
-                                        gson.fromJson(responseData, new TypeToken<List<Project>>() {
-                                        }.getType())
-                                );
-
-                                projectListRecyclerView.setAdapter(projectListAdapter);
-                            }
-                        });
-                    }
                 }
             });
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
