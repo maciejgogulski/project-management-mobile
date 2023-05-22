@@ -2,28 +2,29 @@ package pl.kalisz.ak.pup.todolist_mobile.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TimePicker;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import pl.kalisz.ak.pup.todolist_mobile.R;
-import pl.kalisz.ak.pup.todolist_mobile.adapters.ProjectListAdapter;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Project;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Task;
 import pl.kalisz.ak.pup.todolist_mobile.domain.User;
 import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
+import pl.kalisz.ak.pup.todolist_mobile.rest.clients.ProjectClient;
 import pl.kalisz.ak.pup.todolist_mobile.rest.clients.UserClient;
 
 public class TaskFormActivity extends AppCompatActivity {
@@ -36,13 +37,17 @@ public class TaskFormActivity extends AppCompatActivity {
 
     Spinner projectSpinner;
 
-    DatePicker termDatePicker;
+    Button deadlineBtn;
 
-    String termValue; // TODO zmienić nazwę term na deadline
+    String deadlineValue; // TODO zmienić nazwę term na deadline
 
     Button submitBtn;
 
     private UserClient userClient;
+
+    private ProjectClient projectClient;
+
+    Calendar calendar = Calendar.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +62,10 @@ public class TaskFormActivity extends AppCompatActivity {
 
     private void setupSpinners() {
         userSpinner = findViewById(R.id.task_form_user);
+        projectSpinner = findViewById(R.id.task_form_project);
 
         getUsersFromApi();
-
-        projectSpinner = findViewById(R.id.task_form_project);
-        List<Project> projectsList = new ArrayList<>(); // TODO Pobieranie projektów z api
-        projectSpinner.setAdapter(
-                new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, projectsList)
-        );
+        getProjectsFromApi();
     }
 
     private void getUsersFromApi() {
@@ -91,22 +92,73 @@ public class TaskFormActivity extends AppCompatActivity {
         }
     }
 
+    private void getProjectsFromApi() {
+        projectClient = new ProjectClient(this);
+
+        try {
+            projectClient.getProjectsWithTasks(new HttpClient.ApiResponseListener<>() {
+                @Override
+                public void onSuccess(List<Project> data) {
+                    runOnUiThread(() -> {
+                        projectSpinner.setAdapter(
+                                new ArrayAdapter<>(TaskFormActivity.this, android.R.layout.simple_dropdown_item_1line, data)
+                        );
+                    });
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void setupDatePicker() {
-        termDatePicker = findViewById(R.id.task_form_term);
-        Calendar calendar = Calendar.getInstance();
+        deadlineBtn = findViewById(R.id.task_form_deadline);
+
+        deadlineBtn.setText("Wybierz termin");
+        deadlineBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDatePickerDialog();
+            }
+        });
+    }
+
+    private void openDatePickerDialog() {
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
         int hour = calendar.get(Calendar.HOUR);
         int min = calendar.get(Calendar.MINUTE);
-        termValue = year + "-" + (month + 1) + "-" + dayOfMonth + " " + (hour + 1) + ":" + min;
+        deadlineValue = year + "-" + (month + 1) + "-" + dayOfMonth + " " + (hour + 1) + ":" + min;
 
-        termDatePicker.init(year, month, dayOfMonth, new DatePicker.OnDateChangedListener() {
+        DatePickerDialog deadlineDatePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
-            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                termValue = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                deadlineBtn.setText(year + "-" + month + "-" + dayOfMonth);
+                openTimePickerDialog();
             }
-        }); // TODO Zmiana z date na dateTimePicker
+        }, year, month, dayOfMonth);
+
+        deadlineDatePicker.show();
+    }
+
+    private void openTimePickerDialog() {
+
+        int hour = calendar.get(Calendar.HOUR);
+        int min = calendar.get(Calendar.MINUTE);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                deadlineBtn.setText(deadlineBtn.getText() + " " + hourOfDay + ":" + minute);
+            }
+        }, hour, min, true);
+
+        timePickerDialog.show();
     }
 
     private void setupButtons() {
@@ -121,6 +173,7 @@ public class TaskFormActivity extends AppCompatActivity {
                 intent.putExtra(TaskShowActivity.EXTRA_TASK, (Task) task);
                 context.startActivity(intent);
             }
-        }); // Todo wysyłanie do api nowego usera, obsługa błędów.
+        });
+        // Todo wysyłanie do api nowego usera, obsługa błędów.
     }
 }
