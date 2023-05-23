@@ -1,5 +1,7 @@
 package pl.kalisz.ak.pup.todolist_mobile.activities;
 
+import static androidx.fragment.app.FragmentManager.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
@@ -7,6 +9,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -39,7 +42,7 @@ public class TaskFormActivity extends AppCompatActivity {
 
     Button deadlineBtn;
 
-    String deadlineValue; // TODO zmienić nazwę term na deadline
+    String deadlineValue;
 
     Button submitBtn;
 
@@ -139,7 +142,10 @@ public class TaskFormActivity extends AppCompatActivity {
         DatePickerDialog deadlineDatePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                deadlineBtn.setText(year + "-" + month + "-" + dayOfMonth);
+                String monthString = addZeroInFrontOfSingleDigit(month);
+                String dayOfMonthString = addZeroInFrontOfSingleDigit(dayOfMonth);
+                deadlineValue = year + "-" + monthString + "-" + dayOfMonthString;
+                deadlineBtn.setText(deadlineValue);
                 openTimePickerDialog();
             }
         }, year, month, dayOfMonth);
@@ -154,7 +160,10 @@ public class TaskFormActivity extends AppCompatActivity {
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                deadlineBtn.setText(deadlineBtn.getText() + " " + hourOfDay + ":" + minute);
+                String hourString = addZeroInFrontOfSingleDigit(hourOfDay);
+                String minuteString = addZeroInFrontOfSingleDigit(minute);
+                deadlineValue += " " + hourString + ":" + minuteString;
+                deadlineBtn.setText(deadlineValue);
             }
         }, hour, min, true);
 
@@ -175,5 +184,14 @@ public class TaskFormActivity extends AppCompatActivity {
             }
         });
         // Todo wysyłanie do api nowego usera, obsługa błędów.
+    }
+
+    /**
+     * Dodanie zera przed jednocyfowymi elementami daty i godziny, aby pasowały do formatu.
+     * @param number Liczba do sparsowania.
+     * @return Sparsowana liczba.
+     */
+    private String addZeroInFrontOfSingleDigit(int number) {
+        return (number < 10) ? ("0" + number) : String.valueOf(number);
     }
 }

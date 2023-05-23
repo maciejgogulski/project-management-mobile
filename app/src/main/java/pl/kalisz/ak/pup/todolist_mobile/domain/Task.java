@@ -8,7 +8,7 @@ public class Task implements Serializable {
 
     private int completed;
 
-    //private Date deadline;
+    private Date deadline;
 
     public void setName(String name) {
         this.name = name;
@@ -18,9 +18,9 @@ public class Task implements Serializable {
         this.completed = completed ? 1 : 0;
     }
 
-//    public void setDeadline(Date deadline) {
-//        this.deadline = deadline;
-//    }
+    public void setDeadline(Date deadline) {
+        this.deadline = deadline;
+    }
 
     public String getName() {
         return name;
@@ -30,7 +30,7 @@ public class Task implements Serializable {
         return completed == 1;
     }
 
-//    public Date getDeadline() {
-//        return deadline;
-//    }
+    public Date getDeadline() {
+        return deadline;
+    }
 }

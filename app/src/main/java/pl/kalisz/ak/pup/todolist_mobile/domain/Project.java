@@ -1,5 +1,7 @@
 package pl.kalisz.ak.pup.todolist_mobile.domain;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -33,5 +35,11 @@ public class Project implements Serializable {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return getName();
     }
 }
