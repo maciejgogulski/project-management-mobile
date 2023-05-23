@@ -8,4 +8,6 @@
     <string name="add_task">Dodaj zadanie</string>
     <string name="name">Nazwa</string>
     <string name="save">Zapisz</string>
+    <string name="edit">Edytuj</string>
+    <string name="delete">Usuń</string>
 </resources>

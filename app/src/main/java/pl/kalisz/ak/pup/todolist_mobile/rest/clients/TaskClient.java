@@ -43,4 +43,29 @@ public class TaskClient extends HttpClient{
             }
         });
     }
+
+    public void editTask(Task task, final ApiResponseListener<Task> listener) throws IOException {
+        String taskJsonObject = gson.toJson(task);
+
+        httpService.sendRequest("/api/tasks/" + task.getId(), HttpMethod.PUT.name(), taskJsonObject, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                listener.onFailure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) { // TODO Gdy serwer zwraca 500, nie wywoływana jest metoda onFaliure, tylko kod przechodzi tu.
+                    final String responseData = response.body().string();
+                    listener.onSuccess(
+                            gson.fromJson(
+                                    responseData,
+                                    new TypeToken<Task>() {
+                                    }.getType()
+                            )
+                    );
+                }
+            }
+        });
+    }
 }

@@ -58,7 +58,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 Context context = v.getContext();
-                Intent intent = new Intent(context, ProjectShowActivity.class);
+                Intent intent = new Intent(context, TaskShowActivity.class);
                 intent.putExtra(TaskShowActivity.EXTRA_TASK, (Task) task);
                 context.startActivity(intent);
             }

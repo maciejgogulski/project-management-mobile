@@ -1,5 +1,7 @@
 package pl.kalisz.ak.pup.todolist_mobile.domain;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -7,7 +9,7 @@ import java.util.Date;
 
 public class Task implements Serializable {
 
-    private long id;
+    private Long id;
 
     private String name;
 
@@ -15,15 +17,17 @@ public class Task implements Serializable {
 
     private Date deadline;
 
-    private long userId;
+    @SerializedName("user_id")
+    private Long userId;
 
-    private long projectId;
+    @SerializedName("project_id")
+    private Long projectId;
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -66,26 +70,27 @@ public class Task implements Serializable {
         this.completed = completed;
     }
 
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public long getProjectId() {
+    public Long getProjectId() {
         return projectId;
     }
 
-    public void setProjectId(long projectId) {
+    public void setProjectId(Long projectId) {
         this.projectId = projectId;
     }
 
     @Override
     public String toString() {
         return "Task{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", completed=" + completed +
                 ", deadline=" + deadline +
                 ", userId=" + userId +

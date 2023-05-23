@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import pl.kalisz.ak.pup.todolist_mobile.R;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Project;
@@ -33,6 +35,7 @@ import pl.kalisz.ak.pup.todolist_mobile.rest.clients.UserClient;
 public class TaskFormActivity extends AppCompatActivity {
 
     public static final String EXTRA_TASK = "TASK";
+    Task task;
 
     EditText nameEditText;
 
@@ -44,6 +47,8 @@ public class TaskFormActivity extends AppCompatActivity {
 
     Button deadlineBtn;
     String deadlineValue;
+
+    int selectedCompleted;
 
     Button submitBtn;
 
@@ -61,6 +66,15 @@ public class TaskFormActivity extends AppCompatActivity {
         setContentView(R.layout.activity_task_form);
 
         nameEditText = findViewById(R.id.task_form_name);
+
+        Intent intent = getIntent();
+        if (intent.hasExtra(EXTRA_TASK)) {
+            task = (Task) intent.getExtras().get(EXTRA_TASK);
+            nameEditText.setText(task.getName());
+            selectedProjectId = (task.getProjectId() != null) ? task.getProjectId() : null;
+            selectedUserId = (task.getUserId() != null) ? task.getUserId() : null;
+            selectedCompleted = task.getCompleted();
+        }
         setupSpinners();
         setupDatePicker();
         setupButtons();
@@ -111,6 +125,10 @@ public class TaskFormActivity extends AppCompatActivity {
                         userSpinner.setAdapter(
                                 new ArrayAdapter<>(TaskFormActivity.this, android.R.layout.simple_dropdown_item_1line, data)
                         );
+
+                        if (task != null && task.getUserId() != null) {
+                            userSpinner.setSelection(getPositionById(data, task.getUserId()));
+                        }
                     });
                 }
 
@@ -118,6 +136,16 @@ public class TaskFormActivity extends AppCompatActivity {
                 public void onFailure(String errorMessage) {
 
                 }
+
+                private int getPositionById(List<User> dataList, long id) {
+                    for (int i = 0; i < dataList.size(); i++) {
+                        if (dataList.get(i).getId() == id) {
+                            return i;
+                        }
+                    }
+                    return -1; // Return -1 if the ID is not found
+                }
+
             });
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -135,12 +163,25 @@ public class TaskFormActivity extends AppCompatActivity {
                         projectSpinner.setAdapter(
                                 new ArrayAdapter<>(TaskFormActivity.this, android.R.layout.simple_dropdown_item_1line, data)
                         );
+
+                        if (task != null && task.getProjectId() != null) {
+                            projectSpinner.setSelection(getPositionById(data, task.getProjectId()));
+                        }
                     });
                 }
 
                 @Override
                 public void onFailure(String errorMessage) {
 
+                }
+
+                private int getPositionById(List<Project> dataList, long id) {
+                    for (int i = 0; i < dataList.size(); i++) {
+                        if (dataList.get(i).getId() == id) {
+                            return i;
+                        }
+                    }
+                    return -1; // Return -1 if the ID is not found
                 }
             });
         } catch (IOException e) {
@@ -151,7 +192,27 @@ public class TaskFormActivity extends AppCompatActivity {
     private void setupDatePicker() {
         deadlineBtn = findViewById(R.id.task_form_deadline);
 
-        deadlineBtn.setText("Wybierz termin");
+        int year, month, dayOfMonth, hour, min;
+
+        if (task != null) {
+            calendar.setTime(task.getDeadline());
+        }
+
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        hour = calendar.get(Calendar.HOUR);
+        min = calendar.get(Calendar.MINUTE);
+
+        String monthString = addZeroInFrontOfSingleDigit(month + 1);
+        String dayOfMonthString = addZeroInFrontOfSingleDigit(dayOfMonth);
+        String hourString = addZeroInFrontOfSingleDigit(hour + 1);
+        String minuteString = addZeroInFrontOfSingleDigit(min);
+
+        deadlineValue = year + "-" + (monthString) + "-" + dayOfMonthString + " " + (hourString) + ":" + minuteString;
+
+        deadlineBtn.setText(deadlineValue);
+
         deadlineBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,11 +222,14 @@ public class TaskFormActivity extends AppCompatActivity {
     }
 
     private void openDatePickerDialog() {
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
-        int hour = calendar.get(Calendar.HOUR);
-        int min = calendar.get(Calendar.MINUTE);
+        int year, month, dayOfMonth, hour, min;
+
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        hour = calendar.get(Calendar.HOUR);
+        min = calendar.get(Calendar.MINUTE);
+
         deadlineValue = year + "-" + (month + 1) + "-" + dayOfMonth + " " + (hour + 1) + ":" + min;
 
         DatePickerDialog deadlineDatePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
@@ -204,10 +268,12 @@ public class TaskFormActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Task task = new Task();
+                if (task == null) {
+                    task = new Task();
+                }
 
                 task.setName(nameEditText.getText().toString());
-                task.setCompleted(false);
+                task.setCompleted(selectedCompleted);
                 try {
                     task.setDeadline(deadlineValue);
                 } catch (ParseException e) {
@@ -228,24 +294,42 @@ public class TaskFormActivity extends AppCompatActivity {
     private void submitTask(Task task) throws IOException {
         taskClient = new TaskClient(this);
 
-        taskClient.addTask(task, new HttpClient.ApiResponseListener<>() {
-            @Override
-            public void onSuccess(Task data) {
-                runOnUiThread(() -> {
-                    Toast.makeText(TaskFormActivity.this, data.toString(), Toast.LENGTH_LONG).show();
-                    Log.d("TAG", "onClick: " + data);
-                });
-            }
+        if (task.getId() == null) {
+            taskClient.addTask(task, new HttpClient.ApiResponseListener<>() {
+                @Override
+                public void onSuccess(Task data) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(TaskFormActivity.this, data.toString(), Toast.LENGTH_LONG).show();
+                        Log.d("TAG", "onClick: " + data);
+                    });
+                }
 
-            @Override
-            public void onFailure(String errorMessage) {
-                Log.d("TAG", "onFailure: " + errorMessage);
-            }
-        });
+                @Override
+                public void onFailure(String errorMessage) {
+                    Log.d("TAG", "onFailure: " + errorMessage);
+                }
+            });
+        } else {
+            taskClient.editTask(task, new HttpClient.ApiResponseListener<>() {
+                @Override
+                public void onSuccess(Task data) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(TaskFormActivity.this, data.toString(), Toast.LENGTH_LONG).show();
+                        Log.d("TAG", "onClick: " + data);
+                    });
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+                    Log.d("TAG", "onFailure: " + errorMessage);
+                }
+            });
+        }
     }
 
     /**
      * Dodanie zera przed jednocyfowymi elementami daty i godziny, aby pasowały do formatu.
+     *
      * @param number Liczba do sparsowania.
      * @return Sparsowana liczba.
      */
