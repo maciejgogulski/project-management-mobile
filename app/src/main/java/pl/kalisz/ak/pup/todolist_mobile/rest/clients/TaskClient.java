@@ -7,24 +7,22 @@ import androidx.annotation.NonNull;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-import pl.kalisz.ak.pup.todolist_mobile.domain.Project;
+import pl.kalisz.ak.pup.todolist_mobile.domain.Task;
 
-/**
- * Klasa do wysyłania requestów związanych z projektami do api.
- */
-public class ProjectClient extends HttpClient {
+public class TaskClient extends HttpClient{
 
-    public ProjectClient(Context context) {
+    public TaskClient(Context context) {
         super(context);
     }
 
-    public void getProjectsWithTasks(final ApiResponseListener<List<Project>> listener) throws IOException {
-        httpService.sendRequest("/api/projects/with-tasks", HttpMethod.GET.name(), null, new Callback() {
+    public void addTask(Task task, final ApiResponseListener<Task> listener) throws IOException {
+        String taskJsonObject = gson.toJson(task);
+
+        httpService.sendRequest("/api/tasks", HttpMethod.POST.name(), taskJsonObject, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 listener.onFailure(e.getMessage());
@@ -32,12 +30,12 @@ public class ProjectClient extends HttpClient {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful()) { // TODO Gdy serwer zwraca 500, nie wywoływana jest metoda onFaliure, tylko kod przechodzi tu.
                     final String responseData = response.body().string();
                     listener.onSuccess(
                             gson.fromJson(
                                     responseData,
-                                    new TypeToken<List<Project>>() {
+                                    new TypeToken<Task>() {
                                     }.getType()
                             )
                     );

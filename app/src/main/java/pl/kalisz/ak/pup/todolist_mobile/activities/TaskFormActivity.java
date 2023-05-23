@@ -1,24 +1,23 @@
 package pl.kalisz.ak.pup.todolist_mobile.activities;
 
-import static androidx.fragment.app.FragmentManager.TAG;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.List;
 
@@ -28,6 +27,7 @@ import pl.kalisz.ak.pup.todolist_mobile.domain.Task;
 import pl.kalisz.ak.pup.todolist_mobile.domain.User;
 import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
 import pl.kalisz.ak.pup.todolist_mobile.rest.clients.ProjectClient;
+import pl.kalisz.ak.pup.todolist_mobile.rest.clients.TaskClient;
 import pl.kalisz.ak.pup.todolist_mobile.rest.clients.UserClient;
 
 public class TaskFormActivity extends AppCompatActivity {
@@ -37,11 +37,12 @@ public class TaskFormActivity extends AppCompatActivity {
     EditText nameEditText;
 
     Spinner userSpinner;
+    long selectedUserId;
 
     Spinner projectSpinner;
+    long selectedProjectId;
 
     Button deadlineBtn;
-
     String deadlineValue;
 
     Button submitBtn;
@@ -49,6 +50,8 @@ public class TaskFormActivity extends AppCompatActivity {
     private UserClient userClient;
 
     private ProjectClient projectClient;
+
+    private TaskClient taskClient;
 
     Calendar calendar = Calendar.getInstance();
 
@@ -69,6 +72,32 @@ public class TaskFormActivity extends AppCompatActivity {
 
         getUsersFromApi();
         getProjectsFromApi();
+
+        userSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                User user = (User) parent.getItemAtPosition(position);
+                selectedUserId = user.getId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        projectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Project project = (Project) parent.getItemAtPosition(position);
+                selectedProjectId = project.getId();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void getUsersFromApi() {
@@ -177,13 +206,42 @@ public class TaskFormActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Task task = new Task();
 
-                Context context = v.getContext();
-                Intent intent = new Intent(context, ProjectShowActivity.class);
-                intent.putExtra(TaskShowActivity.EXTRA_TASK, (Task) task);
-                context.startActivity(intent);
+                task.setName(nameEditText.getText().toString());
+                task.setCompleted(false);
+                try {
+                    task.setDeadline(deadlineValue);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
+                task.setUserId(selectedUserId);
+                task.setProjectId(selectedProjectId);
+
+                try {
+                    submitTask(task);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
-        // Todo wysyłanie do api nowego usera, obsługa błędów.
+    }
+
+    private void submitTask(Task task) throws IOException {
+        taskClient = new TaskClient(this);
+
+        taskClient.addTask(task, new HttpClient.ApiResponseListener<>() {
+            @Override
+            public void onSuccess(Task data) {
+                runOnUiThread(() -> {
+                    Toast.makeText(TaskFormActivity.this, data.toString(), Toast.LENGTH_LONG).show();
+                    Log.d("TAG", "onClick: " + data);
+                });
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Log.d("TAG", "onFailure: " + errorMessage);
+            }
+        });
     }
 
     /**

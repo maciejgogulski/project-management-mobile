@@ -12,11 +12,12 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
-import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
-import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
+import okhttp3.internal.http.HttpMethod;
 
 /**
  * Klasa służąca do obsługi requestów HTTP z zewnętrznej aplikacji webowej todolist.
@@ -40,11 +41,12 @@ public class HttpService {
         this.context = context;
     }
 
-    public void sendRequest(String endpoint, Callback callback) throws IOException {
+    public void sendRequest(String endpoint, String method, String body, Callback callback) throws IOException {
         String url = webAppUrl + endpoint;
 
         Request request = new Request.Builder()
                 .url(url)
+                .method(method, (body != null) ? RequestBody.create(body, MediaType.get("application/json")) : null)
                 .header("Authorization", "Bearer " + apiToken)
                 .header("X-CSRF-TOKEN", getCsrfTokenFromSharedPreferences())
                 .build();

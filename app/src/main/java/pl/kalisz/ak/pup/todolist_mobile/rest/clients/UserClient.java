@@ -12,7 +12,6 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-import pl.kalisz.ak.pup.todolist_mobile.domain.Project;
 import pl.kalisz.ak.pup.todolist_mobile.domain.User;
 
 /**
@@ -25,7 +24,7 @@ public class UserClient extends HttpClient {
     }
 
     public void getUsers(final ApiResponseListener<List<User>> listener) throws IOException {
-        httpService.sendRequest("/api/users", new Callback() {
+        httpService.sendRequest("/api/users", HttpMethod.GET.name(), null, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 listener.onFailure(e.getMessage());
