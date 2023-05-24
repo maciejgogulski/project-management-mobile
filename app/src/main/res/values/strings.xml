@@ -10,4 +10,10 @@
     <string name="save">Zapisz</string>
     <string name="edit">Edytuj</string>
     <string name="delete">Usuń</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
+    <string name="user">Użytkownik</string>
+    <string name="deadline">Termin</string>
+    <string name="project">Projekt</string>
+    <string name="completed">Ukończone</string>
 </resources>

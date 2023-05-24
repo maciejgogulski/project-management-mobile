@@ -1,5 +1,6 @@
 package pl.kalisz.ak.pup.todolist_mobile.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
@@ -11,11 +12,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -51,6 +54,8 @@ public class TaskFormActivity extends AppCompatActivity {
 
     int selectedCompleted;
 
+    ToggleButton completedButton;
+
     Button submitBtn;
 
     private UserClient userClient;
@@ -84,6 +89,20 @@ public class TaskFormActivity extends AppCompatActivity {
         setupSpinners();
         setupDatePicker();
         setupButtons();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // outState.putLong("TASK", taskId);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        // taskId = savedInstanceState.getLong("TASK_ID");
+
+        // TODO Wypełnianie danych formularza po obrocie urządzenia.
     }
 
     private void setupSpinners() {
@@ -159,7 +178,7 @@ public class TaskFormActivity extends AppCompatActivity {
         deadlineValue = year + "-" + (month + 1) + "-" + dayOfMonth + " " + (hour + 1) + ":" + min;
 
         DatePickerDialog deadlineDatePicker = new DatePickerDialog(this, (view, year1, month1, dayOfMonth1) -> {
-            String monthString = addZeroInFrontOfSingleDigit(month1);
+            String monthString = addZeroInFrontOfSingleDigit(month1 + 1);
             String dayOfMonthString = addZeroInFrontOfSingleDigit(dayOfMonth1);
             deadlineValue = year1 + "-" + monthString + "-" + dayOfMonthString;
             deadlineBtn.setText(deadlineValue);
@@ -184,6 +203,12 @@ public class TaskFormActivity extends AppCompatActivity {
     }
 
     private void setupButtons() {
+        completedButton = findViewById(R.id.task_form_completed);
+        completedButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            selectedCompleted = isChecked ? 1 : 0;
+        });
+
+
         submitBtn = findViewById(R.id.task_form_submit_btn);
         submitBtn.setOnClickListener(v -> {
             if (task == null) {
@@ -265,6 +290,8 @@ public class TaskFormActivity extends AppCompatActivity {
                     if (task.getUserId() != null) {
                         selectedUserId = task.getUserId();
                     }
+
+                    completedButton.setChecked(task.isCompleted());
                     selectedCompleted = task.getCompleted();
                 });
             }
