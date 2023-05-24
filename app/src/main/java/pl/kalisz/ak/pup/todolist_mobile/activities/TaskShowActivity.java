@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -103,6 +104,15 @@ public class TaskShowActivity extends AppCompatActivity {
             intent.putExtra(TaskFormActivity.EXTRA_TASK_ID, task.getId());
             context.startActivity(intent);
         });
+
+        deleteButton = findViewById(R.id.task_show_delete_btn);
+        deleteButton.setOnClickListener(v -> {
+            try {
+                sendDeleteTaskRequest(v);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     public void getTaskFromApi() throws IOException {
@@ -110,7 +120,7 @@ public class TaskShowActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Task data) {
                 runOnUiThread(() -> {
-                    Log.d("DEBUG", "getProjectFormApi.onSuccess: " + data);
+                    Log.d("DEBUG", "getTaskFromApi.onSuccess: " + data);
                     task = data;
 
                     setupTextViews();
@@ -120,7 +130,34 @@ public class TaskShowActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(String errorMessage) {
-                Log.d("ERROR", "getProjectFormApi.onFailure: " + errorMessage);
+                Log.d("ERROR", "getTaskFromApi.onFailure: " + errorMessage);
+            }
+        });
+    }
+
+    public void sendDeleteTaskRequest(View v) throws IOException {
+        taskClient.deleteTask(taskId, new HttpClient.ApiResponseListener<>() {
+            @Override
+            public void onSuccess(String response) {
+                runOnUiThread(() -> {
+                    Log.d("DEBUG", "deleteTask.onSuccess: ");
+                    Toast.makeText(TaskShowActivity.this, "Usunięto zadanie " + task.getName(), Toast.LENGTH_SHORT).show();
+
+                    Context context = v.getContext();
+                    Intent intent;
+                    if (task.getProjectId() != null) {
+                        intent = new Intent(context, ProjectShowActivity.class);
+                        intent.putExtra(ProjectShowActivity.EXTRA_PROJECT_ID, task.getProjectId());
+                    } else {
+                        intent = new Intent(context, MainActivity.class);
+                    }
+                    context.startActivity(intent);
+                });
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Log.d("ERROR", "deleteTask.onFailure: " + errorMessage);
             }
         });
     }

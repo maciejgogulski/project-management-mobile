@@ -1,6 +1,7 @@
 package pl.kalisz.ak.pup.todolist_mobile.rest.clients;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -88,6 +89,23 @@ public class TaskClient extends HttpClient{
                                     }.getType()
                             )
                     );
+                }
+            }
+        });
+    }
+
+    public void deleteTask(Long taskId, final ApiResponseListener<String> listener) throws IOException {
+        httpService.sendRequest("/api/tasks/" + taskId, HttpMethod.DELETE.name(), null, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                listener.onFailure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response){
+                if (response.isSuccessful()) {
+                    Log.d("DEBUG", "deleteTask: " + taskId);
+                    listener.onSuccess("Usunięto zadanie " + taskId);
                 }
             }
         });
