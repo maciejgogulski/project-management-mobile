@@ -49,7 +49,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         Project project = projectList.get(position);
 
         CardView cardView = holder.cardView;
-        TextView projectName = (TextView) cardView.findViewById(R.id.card_project_name);
+        TextView projectName = cardView.findViewById(R.id.card_project_name);
         projectName.setText(project.getName());
 
         long finishedTasksCount;
@@ -69,20 +69,17 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         }
 
 
-        TextView tasksFinished = (TextView) cardView.findViewById(R.id.card_finished_tasks);
+        TextView tasksFinished = cardView.findViewById(R.id.card_finished_tasks);
         tasksFinished.setText("Ukończone zadania: " + finishedTasksCount);
 
-        TextView tasksUnfinished = (TextView) cardView.findViewById(R.id.card_unfinished_tasks);
+        TextView tasksUnfinished = cardView.findViewById(R.id.card_unfinished_tasks);
         tasksUnfinished.setText("Nieukończone zadania: " + unfinishedTasksCount);
 
-        cardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-                Intent intent = new Intent(context, ProjectShowActivity.class);
-                intent.putExtra(ProjectShowActivity.EXTRA_PROJECT, (Project) project);
-                context.startActivity(intent);
-            }
+        cardView.setOnClickListener(v -> {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, ProjectShowActivity.class);
+            intent.putExtra(ProjectShowActivity.EXTRA_PROJECT_ID, (Long) project.getId());
+            context.startActivity(intent);
         });
     }
 

@@ -38,7 +38,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View listItem = (View) LayoutInflater.from(parent.getContext())
+        View listItem = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.task_list_item, parent, false);
         return new ViewHolder(listItem);
     }
@@ -48,20 +48,17 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         Task task = taskList.get(position);
 
         View listItem = holder.listItem;
-        TextView taskName = (TextView) listItem.findViewById(R.id.list_item_task_name);
+        TextView taskName = listItem.findViewById(R.id.list_item_task_name);
         taskName.setText(task.getName());
 
-        TextView taskFinished = (TextView) listItem.findViewById(R.id.list_item_finished);
+        TextView taskFinished = listItem.findViewById(R.id.list_item_finished);
         taskFinished.setText(task.isCompleted() ? "Tak" : "Nie");
 
-        listItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-                Intent intent = new Intent(context, TaskShowActivity.class);
-                intent.putExtra(TaskShowActivity.EXTRA_TASK, (Task) task);
-                context.startActivity(intent);
-            }
+        listItem.setOnClickListener(v -> {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, TaskShowActivity.class);
+            intent.putExtra(TaskShowActivity.EXTRA_TASK_ID, task.getId());
+            context.startActivity(intent);
         });
     }
 

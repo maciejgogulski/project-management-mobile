@@ -45,4 +45,27 @@ public class ProjectClient extends HttpClient {
             }
         });
     }
+
+    public void getOneProject(Long projectId, final ApiResponseListener<Project> listener) throws IOException {
+        httpService.sendRequest("/api/projects/" + projectId, HttpMethod.GET.name(), null, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                listener.onFailure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    final String responseData = response.body().string();
+                    listener.onSuccess(
+                            gson.fromJson(
+                                    responseData,
+                                    new TypeToken<Project>() {
+                                    }.getType()
+                            )
+                    );
+                }
+            }
+        });
+    }
 }
