@@ -19,7 +19,7 @@
                 android:id="@+id/beforeTermButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/beforeTermTasks"
+                android:text="@string/before_term"
                 app:layout_constraintStart_toEndOf="@+id/projectListButton"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,7 +35,7 @@
                 android:id="@+id/afterTermButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/afterTermTasks"
+                android:text="@string/after_term"
                 app:layout_constraintStart_toEndOf="@+id/beforeTermButton"
                 app:layout_constraintTop_toTopOf="parent"/>
 

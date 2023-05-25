@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">todolist_mobile</string>
+    <string name="app_name">Todolist Mobile</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="projects">Projekty</string>
-    <string name="afterTermTasks">Zadania po terminie</string>
-    <string name="beforeTermTasks">Zadania przed terminem</string>
+    <string name="after_term">Po terminie</string>
+    <string name="before_term">Przed terminem</string>
     <string name="add_task">Dodaj zadanie</string>
     <string name="name">Nazwa</string>
     <string name="save">Zapisz</string>

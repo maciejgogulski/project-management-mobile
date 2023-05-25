@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -106,6 +107,54 @@ public class TaskClient extends HttpClient{
                 if (response.isSuccessful()) {
                     Log.d("DEBUG", "deleteTask: " + taskId);
                     listener.onSuccess("Usunięto zadanie " + taskId);
+                }
+            }
+        });
+    }
+
+    public void getTasksAfterTerm(ApiResponseListener<List<Task>> listener) throws IOException {
+        httpService.sendRequest("/api/tasks/after-deadline", HttpMethod.GET.name(), null, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                listener.onFailure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    final String responseData = response.body().string();
+                    listener.onSuccess(
+                            gson.fromJson(
+                                    responseData,
+                                    new TypeToken<List<Task>>() {
+                                    }.getType()
+                            )
+                    );
+                    Log.d("DEBUG", "getTasksAfterTerm: " + responseData);
+                }
+            }
+        });
+    }
+
+    public void getTasksBeforeDeadline(ApiResponseListener<List<Task>> listener) throws IOException {
+        httpService.sendRequest("/api/tasks/before-deadline", HttpMethod.GET.name(), null, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                listener.onFailure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    final String responseData = response.body().string();
+                    listener.onSuccess(
+                            gson.fromJson(
+                                    responseData,
+                                    new TypeToken<List<Task>>() {
+                                    }.getType()
+                            )
+                    );
+                    Log.d("DEBUG", "getTasksAfterTerm: " + responseData);
                 }
             }
         });
