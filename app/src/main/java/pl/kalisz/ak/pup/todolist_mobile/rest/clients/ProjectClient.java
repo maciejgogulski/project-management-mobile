@@ -68,4 +68,52 @@ public class ProjectClient extends HttpClient {
             }
         });
     }
+
+    public void addProject(Project project, final ApiResponseListener<Project> listener) throws IOException {
+        String projectJsonObject = gson.toJson(project);
+        httpService.sendRequest("/api/projects", HttpMethod.POST.name(), projectJsonObject, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                listener.onFailure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    final String responseData = response.body().string();
+                    listener.onSuccess(
+                            gson.fromJson(
+                                    responseData,
+                                    new TypeToken<Project>() {
+                                    }.getType()
+                            )
+                    );
+                }
+            }
+        });
+    }
+
+    public void editProject(Project project, final ApiResponseListener<Project> listener) throws IOException {
+        String projectJsonObject = gson.toJson(project);
+        httpService.sendRequest("/api/projects/" + project.getId(), HttpMethod.PUT.name(), projectJsonObject, new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                listener.onFailure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    final String responseData = response.body().string();
+                    listener.onSuccess(
+                            gson.fromJson(
+                                    responseData,
+                                    new TypeToken<Project>() {
+                                    }.getType()
+                            )
+                    );
+                }
+            }
+        });
+    }
 }

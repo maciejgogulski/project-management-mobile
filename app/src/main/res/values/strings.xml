@@ -16,4 +16,6 @@
     <string name="deadline">Termin</string>
     <string name="project">Projekt</string>
     <string name="completed">Ukończone</string>
+    <string name="add_project">Dodaj projekt</string>
+    <string name="edit_project">Edytuj projekt</string>
 </resources>

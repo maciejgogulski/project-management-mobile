@@ -12,11 +12,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -75,7 +72,7 @@ public class TaskFormActivity extends AppCompatActivity {
         taskClient = new TaskClient(this);
         userClient = new UserClient(this);
 
-        nameEditText = findViewById(R.id.task_form_name);
+        nameEditText = findViewById(R.id.project_form_name);
 
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_TASK_ID)) {
@@ -106,7 +103,7 @@ public class TaskFormActivity extends AppCompatActivity {
     }
 
     private void setupSpinners() {
-        userSpinner = findViewById(R.id.task_form_user);
+        userSpinner = findViewById(R.id.project_form_user);
         projectSpinner = findViewById(R.id.task_form_project);
 
         getUsersFromApi();

@@ -14,6 +14,10 @@
         android:theme="@style/Theme.Todolist_mobile"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+
+        <activity
+            android:name=".activities.ProjectFormActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.TaskFormActivity"
             android:exported="false" />

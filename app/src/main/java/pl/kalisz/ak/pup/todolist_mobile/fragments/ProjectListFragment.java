@@ -1,10 +1,13 @@
 package pl.kalisz.ak.pup.todolist_mobile.fragments;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +25,8 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 import pl.kalisz.ak.pup.todolist_mobile.R;
+import pl.kalisz.ak.pup.todolist_mobile.activities.ProjectFormActivity;
+import pl.kalisz.ak.pup.todolist_mobile.activities.TaskFormActivity;
 import pl.kalisz.ak.pup.todolist_mobile.adapters.ProjectListAdapter;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Project;
 import pl.kalisz.ak.pup.todolist_mobile.rest.HttpService;
@@ -32,6 +37,8 @@ public class ProjectListFragment extends Fragment {
     private ProjectClient projectClient;
     RecyclerView projectListRecyclerView;
     ProjectListAdapter projectListAdapter;
+
+    Button addProjectButton;
 
     public ProjectListFragment() {
         // Required empty public constructor
@@ -64,6 +71,13 @@ public class ProjectListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         projectListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         loadProjectListFromApi();
+
+        addProjectButton = view.findViewById(R.id.project_list_add_btn);
+        addProjectButton.setOnClickListener(v -> {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, ProjectFormActivity.class);
+            context.startActivity(intent);
+        });
     }
 
     public void loadProjectListFromApi() {

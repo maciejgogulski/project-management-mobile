@@ -2,18 +2,24 @@ package pl.kalisz.ak.pup.todolist_mobile.domain;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.List;
 
 public class Project implements Serializable {
 
-    private long id;
+    private Long id;
 
     private String name;
 
+    @SerializedName("user_id")
+    private Long userId;
+
     private List<Task> tasks;
 
-    public long getId() {
+
+    public Long getId() {
         return id;
     }
 
@@ -21,12 +27,20 @@ public class Project implements Serializable {
         return name;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public List<Task> getTasks() {

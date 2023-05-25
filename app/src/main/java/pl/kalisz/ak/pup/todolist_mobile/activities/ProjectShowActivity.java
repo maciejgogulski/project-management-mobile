@@ -40,6 +40,7 @@ public class ProjectShowActivity extends AppCompatActivity {
     TaskListAdapter adapter;
 
     Button addTaskBtn;
+    Button editBtn;
 
     ProjectClient projectClient;
 
@@ -86,6 +87,14 @@ public class ProjectShowActivity extends AppCompatActivity {
         addTaskBtn.setOnClickListener(v -> {
             Context context = v.getContext();
             Intent intent = new Intent(context, TaskFormActivity.class);
+            context.startActivity(intent);
+        });
+
+        editBtn = findViewById(R.id.project_show_edit_btn);
+        editBtn.setOnClickListener(v -> {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, ProjectFormActivity.class);
+            intent.putExtra(ProjectFormActivity.EXTRA_PROJECT_ID, projectId);
             context.startActivity(intent);
         });
     }
