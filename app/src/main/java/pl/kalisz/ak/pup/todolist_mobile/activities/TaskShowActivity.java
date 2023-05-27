@@ -90,7 +90,7 @@ public class TaskShowActivity extends AppCompatActivity {
         projectTextView.setText(String.valueOf(task.getProjectId()));
 
         deadlineTextView = findViewById(R.id.task_show_deadline);
-        deadlineTextView.setText(task.getDeadline().toString());
+        deadlineTextView.setText(task.getDeadlineString());
 
         completedTextView = findViewById(R.id.task_show_completed);
         completedTextView.setText(

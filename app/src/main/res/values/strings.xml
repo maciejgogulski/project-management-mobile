@@ -22,4 +22,5 @@
     <string name="password">Hasło</string>
     <string name="login">Zaloguj</string>
     <string name="logout">Wyloguj</string>
+    <string name="task_name">Nazwa zadania</string>
 </resources>

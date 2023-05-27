@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class Task implements Serializable {
@@ -62,6 +63,19 @@ public class Task implements Serializable {
         return deadline;
     }
 
+    public String getDeadlineString() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(deadline);
+
+        String year = addZeroInFrontOfSingleDigit(calendar.get(Calendar.YEAR));
+        String month = addZeroInFrontOfSingleDigit(calendar.get(Calendar.MONTH) + 1);
+        String day = addZeroInFrontOfSingleDigit(calendar.get(Calendar.DAY_OF_MONTH));
+        String hour = addZeroInFrontOfSingleDigit(calendar.get(Calendar.HOUR_OF_DAY));
+        String min = addZeroInFrontOfSingleDigit(calendar.get(Calendar.MINUTE));
+
+        return year + "-" + month + "-" + day + " " + hour + ":" + min;
+    }
+
     public int getCompleted() {
         return completed;
     }
@@ -96,5 +110,15 @@ public class Task implements Serializable {
                 ", userId=" + userId +
                 ", projectId=" + projectId +
                 '}';
+    }
+
+    /**
+     * Dodanie zera przed jednocyfowymi elementami daty i godziny, aby pasowały do formatu.
+     *
+     * @param number Liczba do sparsowania.
+     * @return Sparsowana liczba.
+     */
+    private String addZeroInFrontOfSingleDigit(int number) {
+        return (number < 10) ? ("0" + number) : String.valueOf(number);
     }
 }

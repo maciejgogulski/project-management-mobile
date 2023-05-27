@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import pl.kalisz.ak.pup.todolist_mobile.R;
-import pl.kalisz.ak.pup.todolist_mobile.activities.ProjectShowActivity;
 import pl.kalisz.ak.pup.todolist_mobile.activities.TaskShowActivity;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Task;
 
@@ -48,10 +47,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         Task task = taskList.get(position);
 
         View listItem = holder.listItem;
-        TextView taskName = listItem.findViewById(R.id.list_item_task_name);
+        TextView taskName = listItem.findViewById(R.id.list_item_task_name_label);
         taskName.setText(task.getName());
 
-        TextView taskFinished = listItem.findViewById(R.id.list_item_finished);
+        TextView taskDeadline = listItem.findViewById(R.id.list_item_task_deadline_label);
+        taskDeadline.setText(task.getDeadlineString());
+
+        TextView taskFinished = listItem.findViewById(R.id.list_item_finished_label);
         taskFinished.setText(task.isCompleted() ? "Tak" : "Nie");
 
         listItem.setOnClickListener(v -> {
@@ -66,5 +68,4 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     public int getItemCount() {
         return taskList.size();
     }
-
 }
