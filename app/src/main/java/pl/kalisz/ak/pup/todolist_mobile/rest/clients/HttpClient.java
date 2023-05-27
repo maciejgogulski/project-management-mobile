@@ -28,23 +28,27 @@ public abstract class HttpClient {
         this.context = context;
         httpService = new HttpService(context);
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         gson = new GsonBuilder()
                 .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, cont) -> {
                     String dateString = json.getAsString();
                     try {
-                        return dateFormat.parse(dateString);
-                    } catch (ParseException e) {
-                        // Handle parsing exception as needed
-                        return null;
+                        return dateFormat1.parse(dateString);
+                    } catch (ParseException e1) {
+                        try {
+                            return dateFormat2.parse(dateString);
+                        } catch (ParseException e2) {
+                            // Handle parsing exception as needed
+                            return null;
+                        }
                     }
                 })
                 .registerTypeAdapter(Date.class, (JsonSerializer<Date>) (date, typeOfSrc, cont) ->
-                        new JsonPrimitive(dateFormat.format(date))
+                        new JsonPrimitive(dateFormat1.format(date))
                 )
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
-
     }
 
     public interface ApiResponseListener<T> {

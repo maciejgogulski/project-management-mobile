@@ -23,4 +23,7 @@
     <string name="login">Zaloguj</string>
     <string name="logout">Wyloguj</string>
     <string name="task_name">Nazwa zadania</string>
+    <string name="tasks">Zadania</string>
+    <string name="notes">Notatki</string>
+    <string name="updated_at">"Zaktualizowano: "</string>
 </resources>

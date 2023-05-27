@@ -1,24 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ProjectShowActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:layout_margin="10dp">
 
     <TextView
         android:id="@+id/project_show_name"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="bold"
         android:text="Sample project"
+        android:layout_margin="5dp"
+        />
+
+    <TextView
+        android:id="@+id/project_show_tasks_label"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:text="@string/tasks"
+        android:layout_margin="10dp"
         />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/project_show_task_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="3"
         />
+
+    <TextView
+        android:id="@+id/project_show_notes_label"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:text="@string/notes"
+        android:layout_margin="10dp"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/project_show_note_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <Button
         android:id="@+id/project_show_add_task_btn"

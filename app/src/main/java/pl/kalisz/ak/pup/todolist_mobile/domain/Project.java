@@ -18,6 +18,8 @@ public class Project implements Serializable {
 
     private List<Task> tasks;
 
+    private List<Note> notes;
+
 
     public Long getId() {
         return id;
@@ -49,6 +51,14 @@ public class Project implements Serializable {
 
     public void setTasks(List<Task> tasks) {
         this.tasks = tasks;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 
     @NonNull

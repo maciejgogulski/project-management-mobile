@@ -4,10 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,7 +16,9 @@ import java.io.IOException;
 import java.util.List;
 
 import pl.kalisz.ak.pup.todolist_mobile.R;
+import pl.kalisz.ak.pup.todolist_mobile.adapters.NoteListAdapter;
 import pl.kalisz.ak.pup.todolist_mobile.adapters.TaskListAdapter;
+import pl.kalisz.ak.pup.todolist_mobile.domain.Note;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Project;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Task;
 import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
@@ -36,8 +35,10 @@ public class ProjectShowActivity extends AppCompatActivity {
     TextView nameTextView;
 
     RecyclerView tasksRecyclerView;
+    TaskListAdapter taskListAdapter;
 
-    TaskListAdapter adapter;
+    RecyclerView notesRecyclerView;
+    NoteListAdapter noteListAdapter;
 
     Button addTaskBtn;
     Button editBtn;
@@ -103,15 +104,26 @@ public class ProjectShowActivity extends AppCompatActivity {
         });
     }
 
-    private void setupTaskRecyclerView() {
+    private void setupRecyclerViews() {
         tasksRecyclerView = findViewById(R.id.project_show_task_recycler_view);
         tasksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         List<Task> tasks = project.getTasks();
 
         if (!tasks.isEmpty()) {
-            adapter = new TaskListAdapter(tasks);
-            tasksRecyclerView.setAdapter(adapter);
+            taskListAdapter = new TaskListAdapter(tasks);
+            tasksRecyclerView.setAdapter(taskListAdapter);
+        }
+
+
+        notesRecyclerView = findViewById(R.id.project_show_note_recycler_view);
+        notesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        List<Note> notes = project.getNotes();
+
+        if (!notes.isEmpty()) {
+            noteListAdapter = new NoteListAdapter(notes);
+            notesRecyclerView.setAdapter(noteListAdapter);
         }
     }
 
@@ -126,7 +138,7 @@ public class ProjectShowActivity extends AppCompatActivity {
                     nameTextView = findViewById(R.id.project_show_name);
                     nameTextView.setText("Projekt " + project.getName());
 
-                    setupTaskRecyclerView();
+                    setupRecyclerViews();
                     setupButtons();
                 });
             }
