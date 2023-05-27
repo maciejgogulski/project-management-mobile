@@ -38,7 +38,11 @@ public class TaskListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_task_list, container, false);
         taskListRecyclerView = view.findViewById(R.id.task_list_recycler_view);
 
-        taskClient = new TaskClient(getContext());
+        try {
+            taskClient = new TaskClient(getContext());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return view;
     }

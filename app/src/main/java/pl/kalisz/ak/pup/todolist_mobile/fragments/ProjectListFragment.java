@@ -61,7 +61,11 @@ public class ProjectListFragment extends Fragment {
         View view = inflater.inflate(R.layout.project_list_fragment_layout, container, false);
         projectListRecyclerView = view.findViewById(R.id.project_list_recycler_view);
 
-        projectClient = new ProjectClient(getContext());
+        try {
+            projectClient = new ProjectClient(getContext());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return view;
     }

@@ -9,6 +9,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -23,7 +24,7 @@ public abstract class HttpClient {
 
     final Gson gson;
 
-    public HttpClient(Context context) {
+    public HttpClient(Context context) throws IOException {
         this.context = context;
         httpService = new HttpService(context);
 

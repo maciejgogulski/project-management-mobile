@@ -1,5 +1,8 @@
 package pl.kalisz.ak.pup.todolist_mobile.activities;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -7,9 +10,13 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
+
 import pl.kalisz.ak.pup.todolist_mobile.R;
 import pl.kalisz.ak.pup.todolist_mobile.fragments.ProjectListFragment;
 import pl.kalisz.ak.pup.todolist_mobile.fragments.TaskListFragment;
+import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
+import pl.kalisz.ak.pup.todolist_mobile.rest.clients.UserClient;
 
 public class MainActivity extends AppCompatActivity {
 

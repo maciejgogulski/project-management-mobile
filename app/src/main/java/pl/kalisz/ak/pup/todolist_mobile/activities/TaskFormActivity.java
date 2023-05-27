@@ -68,11 +68,23 @@ public class TaskFormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_form);
 
-        projectClient = new ProjectClient(this);
-        taskClient = new TaskClient(this);
-        userClient = new UserClient(this);
+        try {
+            projectClient = new ProjectClient(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            taskClient = new TaskClient(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            userClient = new UserClient(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        nameEditText = findViewById(R.id.project_form_name);
+        nameEditText = findViewById(R.id.login_form_email);
 
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_TASK_ID)) {
@@ -103,7 +115,7 @@ public class TaskFormActivity extends AppCompatActivity {
     }
 
     private void setupSpinners() {
-        userSpinner = findViewById(R.id.project_form_user);
+        userSpinner = findViewById(R.id.login_form_password);
         projectSpinner = findViewById(R.id.task_form_project);
 
         getUsersFromApi();
@@ -206,7 +218,7 @@ public class TaskFormActivity extends AppCompatActivity {
         });
 
 
-        submitBtn = findViewById(R.id.task_form_submit_btn);
+        submitBtn = findViewById(R.id.login_form_submit_btn);
         submitBtn.setOnClickListener(v -> {
             if (task == null) {
                 task = new Task();

@@ -19,7 +19,7 @@ import pl.kalisz.ak.pup.todolist_mobile.domain.Project;
  */
 public class ProjectClient extends HttpClient {
 
-    public ProjectClient(Context context) {
+    public ProjectClient(Context context) throws IOException {
         super(context);
     }
 

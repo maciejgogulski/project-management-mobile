@@ -13,7 +13,7 @@
         android:layout_margin="10dp">
 
         <TextView
-            android:id="@+id/project_name_label"
+            android:id="@+id/login_email_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/name"
@@ -21,27 +21,27 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/project_form_name"
+            android:id="@+id/login_form_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/name"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/project_name_label" />
+            app:layout_constraintTop_toBottomOf="@+id/login_email_label" />
 
         <TextView
-            android:id="@+id/project_user_label"
+            android:id="@+id/login_password_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/user"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/project_form_name" />
+            app:layout_constraintTop_toBottomOf="@+id/login_form_email" />
 
         <Spinner
-            android:id="@+id/project_form_user"
+            android:id="@+id/login_form_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/project_user_label" />
+            app:layout_constraintTop_toBottomOf="@+id/login_password_label" />
 
         <TextView
             android:id="@+id/task_deadline_label"
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:text="@string/project"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/project_form_user" />
+            app:layout_constraintTop_toBottomOf="@+id/login_form_password" />
 
         <Spinner
             android:id="@+id/task_form_project"
@@ -91,7 +91,7 @@
             app:layout_constraintTop_toBottomOf="@+id/task_completed_label" />
 
         <Button
-            android:id="@+id/task_form_submit_btn"
+            android:id="@+id/login_form_submit_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/save"

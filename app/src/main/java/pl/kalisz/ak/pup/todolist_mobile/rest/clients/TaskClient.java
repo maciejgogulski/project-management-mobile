@@ -18,7 +18,7 @@ import pl.kalisz.ak.pup.todolist_mobile.domain.Task;
 
 public class TaskClient extends HttpClient{
 
-    public TaskClient(Context context) {
+    public TaskClient(Context context) throws IOException {
         super(context);
     }
 

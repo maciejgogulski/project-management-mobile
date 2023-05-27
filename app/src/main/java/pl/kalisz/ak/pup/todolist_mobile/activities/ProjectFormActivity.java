@@ -47,10 +47,18 @@ public class ProjectFormActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_form);
 
-        projectClient = new ProjectClient(this);
-        userClient = new UserClient(this);
+        try {
+            projectClient = new ProjectClient(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            userClient = new UserClient(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
-        nameEditText = findViewById(R.id.project_form_name);
+        nameEditText = findViewById(R.id.login_form_email);
 
         Intent intent = getIntent();
         if (intent.hasExtra(EXTRA_PROJECT_ID)) {
@@ -80,7 +88,7 @@ public class ProjectFormActivity extends AppCompatActivity {
     }
 
     private void setupSpinners() {
-        userSpinner = findViewById(R.id.project_form_user);
+        userSpinner = findViewById(R.id.login_form_password);
 
         getUsersFromApi();
 
@@ -100,7 +108,7 @@ public class ProjectFormActivity extends AppCompatActivity {
 
     private void setupButtons() {
 
-        submitBtn = findViewById(R.id.task_form_submit_btn);
+        submitBtn = findViewById(R.id.login_form_submit_btn);
         submitBtn.setOnClickListener(v -> {
             if (project == null) {
                 project = new Project();

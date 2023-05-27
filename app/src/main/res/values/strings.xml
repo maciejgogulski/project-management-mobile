@@ -18,4 +18,7 @@
     <string name="completed">Ukończone</string>
     <string name="add_project">Dodaj projekt</string>
     <string name="edit_project">Edytuj projekt</string>
+    <string name="email">E-mail</string>
+    <string name="password">Hasło</string>
+    <string name="login">Zaloguj</string>
 </resources>

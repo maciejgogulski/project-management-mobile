@@ -42,7 +42,11 @@ public class TaskShowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_show);
 
-        taskClient = new TaskClient(this);
+        try {
+            taskClient = new TaskClient(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         taskId = (Long) getIntent().getExtras().get(EXTRA_TASK_ID);
 
         try {

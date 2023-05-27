@@ -17,6 +17,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/list_item_task_deadline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="20sp"
+        android:textFontWeight="@integer/material_motion_duration_long_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
         android:id="@+id/list_item_finished"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

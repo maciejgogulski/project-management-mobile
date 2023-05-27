@@ -49,7 +49,11 @@ public class ProjectShowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_show);
 
-        projectClient = new ProjectClient(this);
+        try {
+            projectClient = new ProjectClient(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         projectId = (Long) getIntent().getExtras().get(EXTRA_PROJECT_ID);
 
         try {
