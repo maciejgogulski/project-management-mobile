@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 
 import pl.kalisz.ak.pup.todolist_mobile.R;
+import pl.kalisz.ak.pup.todolist_mobile.dto.UserAuthDto;
 import pl.kalisz.ak.pup.todolist_mobile.fragments.ProjectListFragment;
 import pl.kalisz.ak.pup.todolist_mobile.fragments.TaskListFragment;
 import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
@@ -32,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
 
     Button projectListButton;
 
+    Button logoutButton;
+
+    UserClient userClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
         projectListFragment = ProjectListFragment.newInstance();
 
-        projectListButton = findViewById(R.id.projectListButton);
-        tasksAfterTermButton = findViewById(R.id.afterTermButton);
-        tasksBeforeTermButton = findViewById(R.id.beforeTermButton);
+        projectListButton = findViewById(R.id.main_project_list_btn);
+        tasksAfterTermButton = findViewById(R.id.main_after_deadline_btn);
+        tasksBeforeTermButton = findViewById(R.id.main_before_deadline_btn);
 
         tasksAfterTermFragment = new TaskListFragment(true);
         tasksBeforeTermFragment = new TaskListFragment(false);
@@ -50,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         defineTasksAfterTermButton();
         defineTasksBeforeTermButton();
 
+        defineLogoutButton();
     }
 
     public void defineTasksAfterTermButton() {
@@ -104,5 +111,41 @@ public class MainActivity extends AppCompatActivity {
 
         button.setBackgroundColor(primaryColor);
         button.setTextColor(Color.WHITE);
+    }
+
+    private void defineLogoutButton() {
+        try {
+            userClient = new UserClient(this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        logoutButton = findViewById(R.id.main_logout_btn);
+        logoutButton.setOnClickListener(v -> logout());
+    }
+
+    private void logout() {
+        try {
+            userClient.logout(new HttpClient.ApiResponseListener<>() {
+                @Override
+                public void onSuccess(String data) {
+                    runOnUiThread(() -> {
+                        SharedPreferences sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
+                        sharedPreferences.edit()
+                                .putString("API_TOKEN", null).apply();
+
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                    });
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

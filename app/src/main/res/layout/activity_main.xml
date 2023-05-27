@@ -16,15 +16,15 @@
             android:layout_height="wrap_content">
 
             <Button
-                android:id="@+id/beforeTermButton"
+                android:id="@+id/main_before_deadline_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/before_term"
-                app:layout_constraintStart_toEndOf="@+id/projectListButton"
+                app:layout_constraintStart_toEndOf="@+id/main_project_list_btn"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/projectListButton"
+                android:id="@+id/main_project_list_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/projects"
@@ -32,11 +32,11 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/afterTermButton"
+                android:id="@+id/main_after_deadline_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/after_term"
-                app:layout_constraintStart_toEndOf="@+id/beforeTermButton"
+                app:layout_constraintStart_toEndOf="@+id/main_before_deadline_btn"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <androidx.fragment.app.FragmentContainerView
@@ -45,9 +45,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@+id/projectListButton"
+                app:layout_constraintTop_toBottomOf="@+id/main_project_list_btn"
                 tools:layout="@layout/project_list_fragment_layout"
                 tools:layout_editor_absoluteX="0dp" />
+
+            <Button
+                android:id="@+id/main_logout_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/logout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/main_activity_fragment"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

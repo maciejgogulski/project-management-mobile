@@ -72,6 +72,23 @@ public class UserClient extends HttpClient {
         });
     }
 
+    public void logout(final ApiResponseListener<String> listener) throws IOException {
+        httpService.sendRequest("/api/logout", HttpMethod.POST.name(), "", new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                listener.onFailure(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    final String responseData = response.body().string();
+                    listener.onSuccess(responseData);
+                }
+            }
+        });
+    }
+
     public void checkAuth(final ApiResponseListener<Boolean> listener) {
         httpService.sendRequest("/api/check-auth", HttpMethod.GET.name(), null, new Callback() {
             @Override
