@@ -4,6 +4,9 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
@@ -12,19 +15,20 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
-import pl.kalisz.ak.pup.todolist_mobile.domain.Project;
+import pl.kalisz.ak.pup.todolist_mobile.domain.User;
+import pl.kalisz.ak.pup.todolist_mobile.dto.UserAuthDto;
 
 /**
  * Klasa do wysyłania requestów związanych z projektami do api.
  */
-public class ProjectClient extends HttpClient {
+public class UserClient extends HttpClient {
 
-    public ProjectClient(Context context) throws IOException {
+    public UserClient(Context context) throws IOException {
         super(context);
     }
 
-    public void getProjectsWithTasks(final ApiResponseListener<List<Project>> listener) throws IOException {
-        httpService.sendRequest("/api/projects/with-tasks", HttpMethod.GET.name(), null, new Callback() {
+    public void getUsers(final ApiResponseListener<List<User>> listener) throws IOException {
+        httpService.sendRequest("/api/users", HttpMethod.GET.name(), null, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 listener.onFailure(e.getMessage());
@@ -37,7 +41,7 @@ public class ProjectClient extends HttpClient {
                     listener.onSuccess(
                             gson.fromJson(
                                     responseData,
-                                    new TypeToken<List<Project>>() {
+                                    new TypeToken<List<User>>() {
                                     }.getType()
                             )
                     );
@@ -48,8 +52,10 @@ public class ProjectClient extends HttpClient {
         });
     }
 
-    public void getOneProject(Long projectId, final ApiResponseListener<Project> listener) throws IOException {
-        httpService.sendRequest("/api/projects/" + projectId, HttpMethod.GET.name(), null, new Callback() {
+    public void login(UserAuthDto userAuthDto, final ApiResponseListener<String> listener) throws IOException {
+        Gson gson = new Gson();
+        String userAuthJsonObject = gson.toJson(userAuthDto);
+        httpService.sendRequest("/api/login", HttpMethod.POST.name(), userAuthJsonObject, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 listener.onFailure(e.getMessage());
@@ -59,13 +65,10 @@ public class ProjectClient extends HttpClient {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
                     final String responseData = response.body().string();
-                    listener.onSuccess(
-                            gson.fromJson(
-                                    responseData,
-                                    new TypeToken<Project>() {
-                                    }.getType()
-                            )
-                    );
+                    JsonObject jsonObject = gson.fromJson(responseData, JsonObject.class);
+                    JsonElement jsonElement = jsonObject.get("token");
+                    String token = jsonElement.getAsString();
+                    listener.onSuccess(token);
                 } else {
                     listener.onFailure(response.message());
                 }
@@ -73,9 +76,8 @@ public class ProjectClient extends HttpClient {
         });
     }
 
-    public void addProject(Project project, final ApiResponseListener<Project> listener) throws IOException {
-        String projectJsonObject = gson.toJson(project);
-        httpService.sendRequest("/api/projects", HttpMethod.POST.name(), projectJsonObject, new Callback() {
+    public void logout(final ApiResponseListener<String> listener) throws IOException {
+        httpService.sendRequest("/api/logout", HttpMethod.POST.name(), "", new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 listener.onFailure(e.getMessage());
@@ -85,13 +87,7 @@ public class ProjectClient extends HttpClient {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
                     final String responseData = response.body().string();
-                    listener.onSuccess(
-                            gson.fromJson(
-                                    responseData,
-                                    new TypeToken<Project>() {
-                                    }.getType()
-                            )
-                    );
+                    listener.onSuccess(responseData);
                 } else {
                     listener.onFailure(response.message());
                 }
@@ -99,9 +95,8 @@ public class ProjectClient extends HttpClient {
         });
     }
 
-    public void editProject(Project project, final ApiResponseListener<Project> listener) throws IOException {
-        String projectJsonObject = gson.toJson(project);
-        httpService.sendRequest("/api/projects/" + project.getId(), HttpMethod.PUT.name(), projectJsonObject, new Callback() {
+    public void checkAuth(final ApiResponseListener<Boolean> listener) {
+        httpService.sendRequest("/api/check-auth", HttpMethod.GET.name(), null, new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 listener.onFailure(e.getMessage());
@@ -114,12 +109,12 @@ public class ProjectClient extends HttpClient {
                     listener.onSuccess(
                             gson.fromJson(
                                     responseData,
-                                    new TypeToken<Project>() {
+                                    new TypeToken<Boolean>() {
                                     }.getType()
                             )
                     );
                 } else {
-                    listener.onFailure(response.message());
+                    listener.onSuccess(false);
                 }
             }
         });

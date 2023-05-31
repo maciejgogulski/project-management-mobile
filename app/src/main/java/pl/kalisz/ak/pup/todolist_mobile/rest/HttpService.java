@@ -12,11 +12,11 @@ import java.util.List;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Headers;
-import okhttp3.HttpUrl;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
-import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
 
 /**
  * Klasa służąca do obsługi requestów HTTP z zewnętrznej aplikacji webowej todolist.
@@ -28,9 +28,9 @@ public class HttpService {
     /**
      * Pole przechowujące adres url aplikacji webowej todolist.
      */
-    private final String webAppUrl = "http://10.0.2.2:8000";
+    private final String webAppUrl = "http://mtodolist.stronazen.pl";
 
-    private final String apiToken = "492Mg2JawqdwqZdR5PTppGGTtW1PGdzofwUQDZsF";
+    private final String apiToken;
 
     private final Context context;
 
@@ -38,15 +38,17 @@ public class HttpService {
 
     public HttpService(Context context) {
         this.context = context;
+        this.apiToken = getApiTokenFromSharedPreferences();
     }
 
-    public void sendRequest(String endpoint, Callback callback) throws IOException {
+    public void sendRequest(String endpoint, String method, String body, Callback callback) {
         String url = webAppUrl + endpoint;
 
         Request request = new Request.Builder()
                 .url(url)
+                .method(method, (body != null) ? RequestBody.create(body, MediaType.get("application/json")) : null)
                 .header("Authorization", "Bearer " + apiToken)
-                .header("X-CSRF-TOKEN", getCsrfTokenFromSharedPreferences())
+                .header("Accept", "application/json")
                 .build();
 
         Call call = client.newCall(request);
@@ -54,60 +56,9 @@ public class HttpService {
         call.enqueue(callback);
     }
 
-    public void sendCSRFRequest() throws IOException {
-
-        String url = webAppUrl + "/sanctum/csrf-cookie";
-
-        Request request = new Request.Builder()
-                .url(url)
-                .header("Authorization", "Bearer " + apiToken)
-                .build();
-
-        Call call = client.newCall(request);
-
-        call.enqueue(new Callback() {
-            public void onResponse(Call call, Response response)
-                    throws IOException {
-                putCsrfTokenInSharedPreferences(extractCSRF(response));
-                Log.d(TAG, "onResponse: " + getCsrfTokenFromSharedPreferences());
-            }
-
-            public void onFailure(Call call, IOException e) {
-                Log.d(TAG, "onFailure: " + e.getMessage());
-            }
-        });
-    }
-
-    private String extractCSRF(Response response) {
-        Headers headers = response.headers();
-
-        List<String> cookies = headers.values("Set-Cookie");
-
-        String csrfToken = "";
-
-        for (String cookie : cookies) {
-            if (cookie.startsWith("XSRF-TOKEN=")) {
-                csrfToken = cookie.substring("XSRF-TOKEN=".length(), cookie.indexOf(";"));
-            }
-        }
-
-        return csrfToken;
-    }
-
-    private void putCsrfTokenInSharedPreferences(String csrfToken) {
+    private String getApiTokenFromSharedPreferences() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
-        sharedPreferences.edit()
-                .putString("XCSRF", csrfToken).apply();
-    }
 
-    private String getCsrfTokenFromSharedPreferences() throws IOException {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("myPrefs", Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString("XCSRF", null);
-
-        if (token == null) {
-            sendCSRFRequest();
-        }
-
-        return token;
+        return sharedPreferences.getString("API_TOKEN", null);
     }
 }

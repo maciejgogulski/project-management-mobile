@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/project_show_popup_add_task"
+        android:title="@string/add_task" />
+    <item
+        android:id="@+id/project_show_popup_add_note"
+        android:title="@string/add_note" />
+    <!-- Add more menu items if needed -->
+</menu>
