@@ -30,6 +30,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/list_item_note_updated_at_label"
         android:background="@drawable/note_content_background"
+        android:textColor="@color/very_dark_blue"
         android:padding="5dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
