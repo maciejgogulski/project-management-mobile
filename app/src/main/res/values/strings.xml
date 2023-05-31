@@ -26,4 +26,5 @@
     <string name="tasks">Zadania</string>
     <string name="notes">Notatki</string>
     <string name="updated_at">"Zaktualizowano: "</string>
+    <string name="add">Dodaj</string>
 </resources>

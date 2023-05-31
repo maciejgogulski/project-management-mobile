@@ -1,5 +1,6 @@
 package pl.kalisz.ak.pup.todolist_mobile.rest.clients;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 import com.google.gson.FieldNamingPolicy;
@@ -28,8 +29,8 @@ public abstract class HttpClient {
         this.context = context;
         httpService = new HttpService(context);
 
-        SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         gson = new GsonBuilder()
                 .registerTypeAdapter(Date.class, (JsonDeserializer<Date>) (json, typeOfT, cont) -> {
                     String dateString = json.getAsString();

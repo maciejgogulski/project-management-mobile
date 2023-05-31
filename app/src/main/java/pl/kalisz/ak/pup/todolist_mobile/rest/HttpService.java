@@ -28,7 +28,7 @@ public class HttpService {
     /**
      * Pole przechowujące adres url aplikacji webowej todolist.
      */
-    private final String webAppUrl = "http://10.0.2.2:8000";
+    private final String webAppUrl = "http://mtodolist.stronazen.pl";
 
     private final String apiToken;
 

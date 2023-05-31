@@ -38,8 +38,6 @@ public class ProjectListFragment extends Fragment {
     RecyclerView projectListRecyclerView;
     ProjectListAdapter projectListAdapter;
 
-    Button addProjectButton;
-
     public ProjectListFragment() {
         // Required empty public constructor
     }
@@ -75,13 +73,6 @@ public class ProjectListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         projectListRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         loadProjectListFromApi();
-
-        addProjectButton = view.findViewById(R.id.project_list_add_btn);
-        addProjectButton.setOnClickListener(v -> {
-            Context context = v.getContext();
-            Intent intent = new Intent(context, ProjectFormActivity.class);
-            context.startActivity(intent);
-        });
     }
 
     public void loadProjectListFromApi() {

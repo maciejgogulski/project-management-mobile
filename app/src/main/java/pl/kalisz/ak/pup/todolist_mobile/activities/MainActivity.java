@@ -3,10 +3,12 @@ package pl.kalisz.ak.pup.todolist_mobile.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.TypedValue;
-import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.io.IOException;
 
 import pl.kalisz.ak.pup.todolist_mobile.R;
-import pl.kalisz.ak.pup.todolist_mobile.dto.UserAuthDto;
 import pl.kalisz.ak.pup.todolist_mobile.fragments.ProjectListFragment;
 import pl.kalisz.ak.pup.todolist_mobile.fragments.TaskListFragment;
 import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
@@ -28,9 +29,9 @@ public class MainActivity extends AppCompatActivity {
 
     ProjectListFragment projectListFragment;
 
-    Button tasksAfterTermButton;
+    Button tasksAfterDeadlineButton;
 
-    Button tasksBeforeTermButton;
+    Button tasksBeforeDeadlineButton;
 
     Button projectListButton;
 
@@ -38,16 +39,20 @@ public class MainActivity extends AppCompatActivity {
 
     UserClient userClient;
 
+    Resources resources;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        resources = getResources();
+
         projectListFragment = ProjectListFragment.newInstance();
 
         projectListButton = findViewById(R.id.main_project_list_btn);
-        tasksAfterTermButton = findViewById(R.id.main_after_deadline_btn);
-        tasksBeforeTermButton = findViewById(R.id.main_before_deadline_btn);
+        tasksAfterDeadlineButton = findViewById(R.id.main_after_deadline_btn);
+        tasksBeforeDeadlineButton = findViewById(R.id.main_before_deadline_btn);
 
         tasksAfterTermFragment = new TaskListFragment(true);
         tasksBeforeTermFragment = new TaskListFragment(false);
@@ -56,12 +61,14 @@ public class MainActivity extends AppCompatActivity {
         defineTasksAfterTermButton();
         defineTasksBeforeTermButton();
 
+        setHeightOfTheButtons();
+
         defineLogoutButton();
     }
 
     public void defineTasksAfterTermButton() {
-        tasksAfterTermButton.setOnClickListener(v -> {
-            setButtonColorOnClick(tasksAfterTermButton);
+        tasksAfterDeadlineButton.setOnClickListener(v -> {
+            setButtonColorOnClick(tasksAfterDeadlineButton);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.main_activity_fragment, tasksAfterTermFragment)
@@ -70,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void defineTasksBeforeTermButton() {
-        tasksBeforeTermButton.setOnClickListener(v -> {
-            setButtonColorOnClick(tasksBeforeTermButton);
+        tasksBeforeDeadlineButton.setOnClickListener(v -> {
+            setButtonColorOnClick(tasksBeforeDeadlineButton);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.main_activity_fragment, tasksBeforeTermFragment)
@@ -92,26 +99,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setButtonColorOnClick(Button button) {
+        int colorSecondry = resources.getColor(R.color.dark_blue);
         TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(android.R.attr.colorPrimary, typedValue, true);
-        int primaryColor = typedValue.data;
+        getTheme().resolveAttribute(android.R.attr.windowBackground, typedValue, true);
+        int backgroundColor = typedValue.data;
 
         resetButtonColor(projectListButton);
-        resetButtonColor(tasksAfterTermButton);
-        resetButtonColor(tasksBeforeTermButton);
+        resetButtonColor(tasksAfterDeadlineButton);
+        resetButtonColor(tasksBeforeDeadlineButton);
 
-        button.setBackgroundColor(Color.WHITE);
-        button.setTextColor(primaryColor);
+        button.setBackgroundColor(backgroundColor);
+        button.setTextColor(colorSecondry);
     }
 
     private void resetButtonColor(Button button) {
-        TypedValue typedValue = new TypedValue();
-        getTheme().resolveAttribute(android.R.attr.colorPrimary, typedValue, true);
-        int primaryColor = typedValue.data;
+        int colorPrimary = resources.getColor(R.color.light_blue);
+        int colorSecondry = resources.getColor(R.color.dark_blue);
 
-        button.setBackgroundColor(primaryColor);
-        button.setTextColor(Color.WHITE);
+        button.setBackgroundColor(colorPrimary);
+        button.setTextColor(colorSecondry);
     }
+
+    private void setHeightOfTheButtons() {
+        ViewTreeObserver viewTreeObserver = projectListButton.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                projectListButton.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int maxHeight = 0;
+
+                // Measure the height of each button
+                maxHeight = Math.max(maxHeight, projectListButton.getMeasuredHeight());
+                maxHeight = Math.max(maxHeight, tasksBeforeDeadlineButton.getMeasuredHeight());
+                maxHeight = Math.max(maxHeight, tasksAfterDeadlineButton.getMeasuredHeight());
+
+                // Set the maximum height to all buttons
+                projectListButton.setHeight(maxHeight);
+                tasksBeforeDeadlineButton.setHeight(maxHeight);
+                tasksAfterDeadlineButton.setHeight(maxHeight);
+            }
+        });
+    }
+
 
     private void defineLogoutButton() {
         try {

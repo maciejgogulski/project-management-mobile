@@ -1,5 +1,7 @@
 package pl.kalisz.ak.pup.todolist_mobile.domain;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -46,7 +48,7 @@ public class Task implements Serializable {
 
     public void setDeadline(String deadlineString) throws ParseException {
         if (deadlineString != null) {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             this.deadline = dateFormat.parse(deadlineString);
         }
     }
