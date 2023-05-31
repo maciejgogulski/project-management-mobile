@@ -4,13 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 import java.util.List;
@@ -40,10 +45,11 @@ public class ProjectShowActivity extends AppCompatActivity {
     RecyclerView notesRecyclerView;
     NoteListAdapter noteListAdapter;
 
-    Button addTaskBtn;
     Button editBtn;
 
     ProjectClient projectClient;
+
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +68,8 @@ public class ProjectShowActivity extends AppCompatActivity {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        defineFloatingActionButton();
     }
 
     @Override
@@ -88,13 +96,6 @@ public class ProjectShowActivity extends AppCompatActivity {
     }
 
     private void setupButtons() {
-        addTaskBtn = findViewById(R.id.project_show_add_task_btn);
-        addTaskBtn.setOnClickListener(v -> {
-            Context context = v.getContext();
-            Intent intent = new Intent(context, TaskFormActivity.class);
-            context.startActivity(intent);
-        });
-
         editBtn = findViewById(R.id.project_show_edit_btn);
         editBtn.setOnClickListener(v -> {
             Context context = v.getContext();
@@ -125,6 +126,33 @@ public class ProjectShowActivity extends AppCompatActivity {
             noteListAdapter = new NoteListAdapter(notes);
             notesRecyclerView.setAdapter(noteListAdapter);
         }
+    }
+
+    private void defineFloatingActionButton() {
+        fab = findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(ProjectShowActivity.this, v);
+            MenuInflater inflater = popupMenu.getMenuInflater();
+            inflater.inflate(R.menu.popup_menu_project_show, popupMenu.getMenu());
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                Intent intent;
+                // Handle menu item click events here
+                switch (item.getItemId()) {
+                    case R.id.project_show_popup_add_task:
+                        intent = new Intent(ProjectShowActivity.this, TaskFormActivity.class);
+                        startActivity(intent);
+                        return true;
+                    case R.id.project_show_popup_add_note:
+                        Toast.makeText(this, "Dodanie notatki nie jest jeszcze dostępne.", Toast.LENGTH_LONG).show();
+                        return true;
+                    // Add more cases for other menu options if needed
+                }
+                return false;
+            });
+
+            popupMenu.show();
+        });
     }
 
     private void getProjectFromApi() throws IOException {

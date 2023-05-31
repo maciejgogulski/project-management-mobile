@@ -8,10 +8,16 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.PopupMenu;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.IOException;
 
@@ -21,7 +27,7 @@ import pl.kalisz.ak.pup.todolist_mobile.fragments.TaskListFragment;
 import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
 import pl.kalisz.ak.pup.todolist_mobile.rest.clients.UserClient;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     TaskListFragment tasksAfterTermFragment;
 
@@ -36,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     Button projectListButton;
 
     Button logoutButton;
+
+    FloatingActionButton fab;
 
     UserClient userClient;
 
@@ -64,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         setHeightOfTheButtons();
 
         defineLogoutButton();
+
+        defineFloatingActionButton();
     }
 
     public void defineTasksAfterTermButton() {
@@ -141,6 +151,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void defineFloatingActionButton() {
+        fab = findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(MainActivity.this, v);
+            MenuInflater inflater = popupMenu.getMenuInflater();
+            inflater.inflate(R.menu.popup_menu_main, popupMenu.getMenu());
+
+            popupMenu.setOnMenuItemClickListener(item -> {
+                Intent intent;
+                // Handle menu item click events here
+                switch (item.getItemId()) {
+                    case R.id.popup_add_project:
+                        intent = new Intent(MainActivity.this, ProjectFormActivity.class);
+                        startActivity(intent);
+                        return true;
+                    case R.id.popup_add_task:
+                        intent = new Intent(MainActivity.this, TaskFormActivity.class);
+                        startActivity(intent);
+                        return true;
+                    // Add more cases for other menu options if needed
+                }
+                return false;
+            });
+
+            popupMenu.show();
+        });
+    }
 
     private void defineLogoutButton() {
         try {

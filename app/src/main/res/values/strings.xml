@@ -27,4 +27,5 @@
     <string name="notes">Notatki</string>
     <string name="updated_at">"Zaktualizowano: "</string>
     <string name="add">Dodaj</string>
+    <string name="add_note">Dodaj notatkę</string>
 </resources>

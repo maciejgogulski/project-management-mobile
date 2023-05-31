@@ -45,6 +45,8 @@ public class UserClient extends HttpClient {
                                     }.getType()
                             )
                     );
+                } else {
+                    listener.onFailure(response.message());
                 }
             }
         });
@@ -67,6 +69,8 @@ public class UserClient extends HttpClient {
                     JsonElement jsonElement = jsonObject.get("token");
                     String token = jsonElement.getAsString();
                     listener.onSuccess(token);
+                } else {
+                    listener.onFailure(response.message());
                 }
             }
         });
@@ -84,6 +88,8 @@ public class UserClient extends HttpClient {
                 if (response.isSuccessful()) {
                     final String responseData = response.body().string();
                     listener.onSuccess(responseData);
+                } else {
+                    listener.onFailure(response.message());
                 }
             }
         });

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -94,7 +95,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(String errorMessage) {
-
+                    runOnUiThread(() -> {
+                        Toast.makeText(LoginActivity.this, "Logowanie nie powiodło się.", Toast.LENGTH_SHORT).show();
+                    });
                 }
             });
         } catch (IOException e) {

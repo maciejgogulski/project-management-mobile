@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_margin="10dp">
 
@@ -24,6 +25,60 @@
         android:text="@string/tasks"
         android:layout_margin="10dp"
         />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/const_lyt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/list_item_task_name_label"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center_vertical"
+            android:text="@string/task_name"
+            android:textStyle="bold"
+            app:layout_constraintDimensionRatio="w,1:3"
+            app:layout_constraintEnd_toStartOf="@+id/list_item_task_deadline_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/list_item_task_deadline_label"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center_vertical"
+            android:text="@string/deadline"
+            android:textStyle="bold"
+            app:layout_constraintDimensionRatio="w,1:3"
+            app:layout_constraintEnd_toStartOf="@+id/list_item_finished_label"
+            app:layout_constraintStart_toEndOf="@+id/list_item_task_name_label"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/list_item_finished_label"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="center_vertical"
+            android:text="@string/completed"
+            android:textStyle="bold"
+            app:layout_constraintDimensionRatio="w,1:3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/list_item_task_deadline_label"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#000000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/list_item_finished_label" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/project_show_task_recycler_view"
@@ -55,15 +110,20 @@
         android:layout_weight="1" />
 
     <Button
-        android:id="@+id/project_show_add_task_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/add_task"/>
-
-    <Button
         android:id="@+id/project_show_edit_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/edit_project"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:contentDescription="@string/add"
+        app:borderWidth="0dp"
+        app:layout_anchorGravity="bottom|end"
+        app:srcCompat="@android:drawable/ic_menu_add" />
 
 </LinearLayout>

@@ -263,6 +263,9 @@ public class TaskFormActivity extends AppCompatActivity {
             @Override
             public void onFailure(String errorMessage) {
                 Log.d("TAG", "onFailure: " + errorMessage);
+                runOnUiThread(() -> {
+                    Toast.makeText(TaskFormActivity.this, "Edycja zadania nie powiodła się.", Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }
@@ -280,6 +283,9 @@ public class TaskFormActivity extends AppCompatActivity {
             @Override
             public void onFailure(String errorMessage) {
                 Log.d("TAG", "onFailure: " + errorMessage);
+                runOnUiThread(() -> {
+                    Toast.makeText(TaskFormActivity.this, "Dodanie zadania nie powiodło się.", Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }
@@ -308,6 +314,9 @@ public class TaskFormActivity extends AppCompatActivity {
             @Override
             public void onFailure(String errorMessage) {
                 Log.d("ERROR", "getProjectFormApi.onFailure: " + errorMessage);
+                runOnUiThread(() -> {
+                    Toast.makeText(TaskFormActivity.this, "Nie udało się pobrać zadania.", Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }

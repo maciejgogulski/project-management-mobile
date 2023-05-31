@@ -41,6 +41,8 @@ public class ProjectClient extends HttpClient {
                                     }.getType()
                             )
                     );
+                } else {
+                    listener.onFailure(response.message());
                 }
             }
         });
@@ -64,6 +66,8 @@ public class ProjectClient extends HttpClient {
                                     }.getType()
                             )
                     );
+                } else {
+                    listener.onFailure(response.message());
                 }
             }
         });
@@ -88,6 +92,8 @@ public class ProjectClient extends HttpClient {
                                     }.getType()
                             )
                     );
+                } else {
+                    listener.onFailure(response.message());
                 }
             }
         });
@@ -112,6 +118,8 @@ public class ProjectClient extends HttpClient {
                                     }.getType()
                             )
                     );
+                } else {
+                    listener.onFailure(response.message());
                 }
             }
         });

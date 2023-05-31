@@ -146,6 +146,9 @@ public class ProjectFormActivity extends AppCompatActivity {
             @Override
             public void onFailure(String errorMessage) {
                 Log.d("TAG", "onFailure: " + errorMessage);
+                runOnUiThread(() -> {
+                    Toast.makeText(ProjectFormActivity.this, "Edycja projektu nie powiodła się.", Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }
@@ -163,6 +166,9 @@ public class ProjectFormActivity extends AppCompatActivity {
             @Override
             public void onFailure(String errorMessage) {
                 Log.d("TAG", "onFailure: " + errorMessage);
+                runOnUiThread(() -> {
+                    Toast.makeText(ProjectFormActivity.this, "Dodanie projektu nie powiodło się.", Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }
@@ -185,6 +191,9 @@ public class ProjectFormActivity extends AppCompatActivity {
             @Override
             public void onFailure(String errorMessage) {
                 Log.d("ERROR", "getProjectFormApi.onFailure: " + errorMessage);
+                runOnUiThread(() -> {
+                    Toast.makeText(ProjectFormActivity.this, "Nie udało się pobrać projektu.", Toast.LENGTH_SHORT).show();
+                });
             }
         });
     }

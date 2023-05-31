@@ -42,6 +42,8 @@ public class TaskClient extends HttpClient{
                                     }.getType()
                             )
                     );
+                } else {
+                    listener.onFailure(response.message());
                 }
             }
         });
@@ -67,6 +69,8 @@ public class TaskClient extends HttpClient{
                                     }.getType()
                             )
                     );
+                } else {
+                    listener.onFailure(response.message());
                 }
             }
         });
@@ -90,6 +94,8 @@ public class TaskClient extends HttpClient{
                                     }.getType()
                             )
                     );
+                } else {
+                    listener.onFailure(response.message());
                 }
             }
         });
@@ -107,6 +113,8 @@ public class TaskClient extends HttpClient{
                 if (response.isSuccessful()) {
                     Log.d("DEBUG", "deleteTask: " + taskId);
                     listener.onSuccess("Usunięto zadanie " + taskId);
+                } else {
+                    listener.onFailure(response.message());
                 }
             }
         });
@@ -131,6 +139,8 @@ public class TaskClient extends HttpClient{
                             )
                     );
                     Log.d("DEBUG", "getTasksAfterTerm: " + responseData);
+                } else {
+                    listener.onFailure(response.message());
                 }
             }
         });
@@ -155,6 +165,8 @@ public class TaskClient extends HttpClient{
                             )
                     );
                     Log.d("DEBUG", "getTasksAfterTerm: " + responseData);
+                } else {
+                    listener.onFailure(response.message());
                 }
             }
         });

@@ -14,7 +14,8 @@
         app:layout_constraintDimensionRatio="w,1:3"
         app:layout_constraintEnd_toStartOf="@+id/list_item_task_deadline_label"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingRight="5dp"/>
 
     <TextView
         android:id="@+id/list_item_task_deadline_label"
@@ -24,7 +25,8 @@
         app:layout_constraintDimensionRatio="w,1:3"
         app:layout_constraintEnd_toStartOf="@+id/list_item_finished_label"
         app:layout_constraintStart_toEndOf="@+id/list_item_task_name_label"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingRight="5dp"/>
 
     <TextView
         android:id="@+id/list_item_finished_label"
@@ -34,7 +36,8 @@
         app:layout_constraintDimensionRatio="w,1:3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/list_item_task_deadline_label"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingRight="5dp"/>
 
     <View
         android:layout_width="match_parent"
