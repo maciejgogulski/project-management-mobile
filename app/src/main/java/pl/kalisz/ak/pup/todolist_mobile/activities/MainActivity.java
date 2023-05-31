@@ -76,6 +76,11 @@ public class MainActivity extends AppCompatActivity{
         defineFloatingActionButton();
     }
 
+    @Override
+    public void onBackPressed() {
+        // Do nothing to block the back button
+    }
+
     public void defineTasksAfterTermButton() {
         tasksAfterDeadlineButton.setOnClickListener(v -> {
             setButtonColorOnClick(tasksAfterDeadlineButton);

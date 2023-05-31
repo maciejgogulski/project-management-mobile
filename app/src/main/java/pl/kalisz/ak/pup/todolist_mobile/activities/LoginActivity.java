@@ -67,6 +67,11 @@ public class LoginActivity extends AppCompatActivity {
         // TODO Wypełnianie danych formularza po obrocie urządzenia.
     }
 
+    @Override
+    public void onBackPressed() {
+        // Do nothing to block the back button
+    }
+
     private void setupButtons() {
 
         submitBtn = findViewById(R.id.login_form_submit_btn);
