@@ -45,6 +45,7 @@ public class TaskShowActivity extends AppCompatActivity {
 
     Button editButton;
     Button deleteButton;
+    Button addNoteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +126,15 @@ public class TaskShowActivity extends AppCompatActivity {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        });
+
+        addNoteButton = findViewById(R.id.task_show_add_note_btn);
+        addNoteButton.setOnClickListener(v -> {
+            Context context = v.getContext();
+            Intent intent = new Intent(context, NoteActivity.class);
+            intent.putExtra(NoteActivity.EXTRA_TASK_ID, task.getId());
+            intent.putExtra(NoteActivity.EXTRA_TASK_NAME, task.getName());
+            context.startActivity(intent);
         });
     }
 

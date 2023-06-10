@@ -144,7 +144,10 @@ public class ProjectShowActivity extends AppCompatActivity {
                         startActivity(intent);
                         return true;
                     case R.id.project_show_popup_add_note:
-                        Toast.makeText(this, "Dodanie notatki nie jest jeszcze dostępne.", Toast.LENGTH_LONG).show();
+                        intent = new Intent(ProjectShowActivity.this, NoteActivity.class);
+                        intent.putExtra(NoteActivity.EXTRA_PROJECT_ID, projectId);
+                        intent.putExtra(NoteActivity.EXTRA_PROJECT_NAME, project.getName());
+                        startActivity(intent);
                         return true;
                     // Add more cases for other menu options if needed
                 }
