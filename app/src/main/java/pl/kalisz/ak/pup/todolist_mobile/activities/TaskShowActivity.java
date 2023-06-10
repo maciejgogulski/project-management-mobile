@@ -145,7 +145,7 @@ public class TaskShowActivity extends AppCompatActivity {
         List<Note> notes = task.getNotes();
 
         if (!notes.isEmpty()) {
-            noteListAdapter = new NoteListAdapter(notes);
+            noteListAdapter = new NoteListAdapter(notes, taskId, null, task.getName(), null);
             notesRecyclerView.setAdapter(noteListAdapter);
         }
     }

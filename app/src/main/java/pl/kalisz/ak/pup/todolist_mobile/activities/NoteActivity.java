@@ -110,6 +110,13 @@ public class NoteActivity extends AppCompatActivity {
         });
 
         deleteButton = findViewById(R.id.note_form_delete_btn);
+
+        if (noteId != null) {
+            deleteButton.setText(R.string.delete);
+        } else {
+            deleteButton.setText(R.string.back);
+        }
+
         deleteButton.setOnClickListener(v -> {
             if(noteId != null) {
                 try {
@@ -118,6 +125,16 @@ public class NoteActivity extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
             }
+            Intent intent = null;
+            if (projectId != null) {
+                intent = new Intent(NoteActivity.this, ProjectShowActivity.class);
+                intent.putExtra(ProjectShowActivity.EXTRA_PROJECT_ID, projectId);
+            }
+            if (taskId != null) {
+                intent = new Intent(NoteActivity.this, TaskShowActivity.class);
+                intent.putExtra(TaskShowActivity.EXTRA_TASK_ID, taskId);
+            }
+            startActivity(intent);
         });
     }
 
@@ -206,7 +223,7 @@ public class NoteActivity extends AppCompatActivity {
             public void onFailure(String errorMessage) {
                 Log.d("ERROR", "getNoteFromApi.onFailure: " + errorMessage);
                 runOnUiThread(() -> {
-                    Toast.makeText(NoteActivity.this, "Nie udało się pobrać notatki.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NoteActivity.this, "Nie udało się pobrać notatki", Toast.LENGTH_SHORT).show();
                 });
             }
         });
@@ -218,6 +235,7 @@ public class NoteActivity extends AppCompatActivity {
             public void onSuccess(String data) {
                 runOnUiThread(() -> {
                     Log.d("DEBUG", "deleteNote.onSuccess: " + data);
+                    Toast.makeText(NoteActivity.this, "Usunięto notatkę", Toast.LENGTH_SHORT).show();
                 });
             }
 

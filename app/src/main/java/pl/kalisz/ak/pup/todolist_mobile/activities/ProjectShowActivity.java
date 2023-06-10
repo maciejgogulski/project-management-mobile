@@ -123,7 +123,7 @@ public class ProjectShowActivity extends AppCompatActivity {
         List<Note> notes = project.getNotes();
 
         if (!notes.isEmpty()) {
-            noteListAdapter = new NoteListAdapter(notes);
+            noteListAdapter = new NoteListAdapter(notes, null, projectId, null, project.getName());
             notesRecyclerView.setAdapter(noteListAdapter);
         }
     }

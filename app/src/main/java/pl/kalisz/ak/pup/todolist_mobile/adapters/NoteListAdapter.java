@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import pl.kalisz.ak.pup.todolist_mobile.R;
+import pl.kalisz.ak.pup.todolist_mobile.activities.NoteActivity;
 import pl.kalisz.ak.pup.todolist_mobile.activities.TaskShowActivity;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Note;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Task;
@@ -20,6 +22,10 @@ import pl.kalisz.ak.pup.todolist_mobile.domain.Task;
 public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHolder> {
 
     private final List<Note> noteList;
+    Long taskId;
+    String taskName;
+    Long projectId;
+    String projectName;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -31,8 +37,17 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHo
         }
     }
 
-    public NoteListAdapter(List<Note> noteList) {
+    public NoteListAdapter(List<Note> noteList,
+                           @Nullable Long taskId,
+                           @Nullable Long projectId,
+                           @Nullable String taskName,
+                           @Nullable String projectName)
+    {
         this.noteList = noteList;
+        this.taskId = taskId;
+        this.projectId = projectId;
+        this.taskName = taskName;
+        this.projectName = projectName;
     }
 
     @NonNull
@@ -55,10 +70,19 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHo
         noteContent.setText(note.getContent());
 
         listItem.setOnClickListener(v -> {
-//            Context context = v.getContext();
-//            Intent intent = new Intent(context, TaskShowActivity.class);
-//            intent.putExtra(TaskShowActivity.EXTRA_TASK_ID, task.getId());
-//            context.startActivity(intent);
+            Context context = v.getContext();
+            Intent intent = new Intent(context, NoteActivity.class);
+            intent.putExtra(NoteActivity.EXTRA_NOTE_ID, note.getId());
+
+            if (taskId != null) {
+                intent.putExtra(NoteActivity.EXTRA_TASK_ID, taskId);
+                intent.putExtra(NoteActivity.EXTRA_TASK_NAME, taskName);
+            }
+            if (projectId != null) {
+                intent.putExtra(NoteActivity.EXTRA_PROJECT_ID, projectId);
+                intent.putExtra(NoteActivity.EXTRA_PROJECT_NAME, projectName);
+            }
+            context.startActivity(intent);
         });
     }
 
