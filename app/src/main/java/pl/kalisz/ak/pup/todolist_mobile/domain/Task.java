@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class Task implements Serializable {
 
@@ -23,8 +24,16 @@ public class Task implements Serializable {
     @SerializedName("user_id")
     private Long userId;
 
+    @SerializedName("user_name")
+    private String userName;
+
     @SerializedName("project_id")
     private Long projectId;
+
+    @SerializedName("project_name")
+    private String projectName;
+
+    private List<Note> notes;
 
     public void setId(Long id) {
         this.id = id;
@@ -100,6 +109,30 @@ public class Task implements Serializable {
 
     public void setProjectId(Long projectId) {
         this.projectId = projectId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
     }
 
     @Override

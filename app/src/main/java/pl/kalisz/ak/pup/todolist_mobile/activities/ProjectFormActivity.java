@@ -138,7 +138,9 @@ public class ProjectFormActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Project data) {
                 runOnUiThread(() -> {
-                    Toast.makeText(ProjectFormActivity.this, data.toString(), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(ProjectFormActivity.this, ProjectShowActivity.class);
+                    intent.putExtra(ProjectShowActivity.EXTRA_PROJECT_ID, data.getId());
+                    startActivity(intent);
                     Log.d("TAG", "onClick: " + data);
                 });
             }
@@ -158,7 +160,9 @@ public class ProjectFormActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Project data) {
                 runOnUiThread(() -> {
-                    Toast.makeText(ProjectFormActivity.this, data.toString(), Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(ProjectFormActivity.this, ProjectShowActivity.class);
+                    intent.putExtra(ProjectShowActivity.EXTRA_PROJECT_ID, data.getId());
+                    startActivity(intent);
                     Log.d("TAG", "onClick: " + data);
                 });
             }

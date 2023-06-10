@@ -17,16 +17,20 @@
 
         <activity
             android:name=".activities.MainActivity"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".activities.ProjectFormActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".activities.MainActivity"/>
         <activity
             android:name=".activities.TaskFormActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".activities.MainActivity"/>
         <activity
             android:name=".activities.TaskShowActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".activities.MainActivity"/>
         <activity
             android:name=".activities.ProjectShowActivity"
             android:exported="false"

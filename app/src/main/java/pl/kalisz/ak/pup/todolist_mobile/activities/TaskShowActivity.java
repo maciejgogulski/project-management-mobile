@@ -2,6 +2,8 @@ package pl.kalisz.ak.pup.todolist_mobile.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,8 +15,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.List;
 
 import pl.kalisz.ak.pup.todolist_mobile.R;
+import pl.kalisz.ak.pup.todolist_mobile.adapters.NoteListAdapter;
+import pl.kalisz.ak.pup.todolist_mobile.adapters.TaskListAdapter;
+import pl.kalisz.ak.pup.todolist_mobile.domain.Note;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Project;
 import pl.kalisz.ak.pup.todolist_mobile.domain.Task;
 import pl.kalisz.ak.pup.todolist_mobile.rest.clients.HttpClient;
@@ -33,6 +39,9 @@ public class TaskShowActivity extends AppCompatActivity {
     TextView projectTextView;
     TextView deadlineTextView;
     TextView completedTextView;
+
+    RecyclerView notesRecyclerView;
+    NoteListAdapter noteListAdapter;
 
     Button editButton;
     Button deleteButton;
@@ -84,10 +93,10 @@ public class TaskShowActivity extends AppCompatActivity {
         nameTextView.setText(task.getName());
 
         userTextView = findViewById(R.id.task_show_user);
-        userTextView.setText(String.valueOf(task.getUserId()));
+        userTextView.setText(String.valueOf(task.getUserName()));
 
         projectTextView = findViewById(R.id.task_show_project);
-        projectTextView.setText(String.valueOf(task.getProjectId()));
+        projectTextView.setText(String.valueOf(task.getProjectName()));
 
         deadlineTextView = findViewById(R.id.task_show_deadline);
         deadlineTextView.setText(task.getDeadlineString());
@@ -119,6 +128,18 @@ public class TaskShowActivity extends AppCompatActivity {
         });
     }
 
+    private void setupRecyclerViews() {
+        notesRecyclerView = findViewById(R.id.task_show_note_recycler_view);
+        notesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        List<Note> notes = task.getNotes();
+
+        if (!notes.isEmpty()) {
+            noteListAdapter = new NoteListAdapter(notes);
+            notesRecyclerView.setAdapter(noteListAdapter);
+        }
+    }
+
     public void getTaskFromApi() throws IOException {
         taskClient.getOneTask(taskId, new HttpClient.ApiResponseListener<>() {
             @Override
@@ -129,6 +150,7 @@ public class TaskShowActivity extends AppCompatActivity {
 
                     setupTextViews();
                     setupButtons();
+                    setupRecyclerViews();
                 });
             }
 
